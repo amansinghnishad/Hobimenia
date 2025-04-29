@@ -1,0 +1,1 @@
+// CreatePostPage component
