@@ -1,80 +1,94 @@
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { signup } from "../services/authService";
 import { useState } from "react";
-
-const schema = yup.object({
-  username: yup.string().min(3).required(),
-  email: yup.string().email().required(),
-  password: yup.string().min(6).required(),
-});
+import { signup } from "../services/authService";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({ resolver: yupResolver(schema) });
-
-  const [error, setError] = useState("");
+    formState: { errors },
+  } = useForm();
+  const { login } = useAuth();
   const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState("");
 
   const onSubmit = async (data) => {
     try {
       const res = await signup(data);
-      if (res.token) {
-        // TODO: store token in AuthContext
-        navigate("/login");
-      }
+      login(res.user, res.token); // Save user in context and localStorage
+      navigate("/home");
     } catch (err) {
-      setError(err.response?.data?.message || "Signup failed");
+      setErrorMsg(err.response?.data?.message || "Signup failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white shadow rounded-lg p-8 w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold text-indigo-600 text-center mb-4">
-          Sign up
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white shadow-lg p-6 rounded-xl max-w-md w-full">
+        <h2 className="text-2xl font-bold mb-4 text-center">Create Account</h2>
+        {errorMsg && <p className="text-red-500 text-sm mb-2">{errorMsg}</p>}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Username</label>
+            <input
+              type="text"
+              {...register("username", { required: true })}
+              className="w-full mt-1 p-2 border rounded"
+              placeholder="johndoe"
+            />
+            {errors.username && (
+              <p className="text-red-500 text-xs">Username is required</p>
+            )}
+          </div>
 
-        {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
+          <div>
+            <label className="block text-sm font-medium">Email</label>
+            <input
+              type="email"
+              {...register("email", { required: true })}
+              className="w-full mt-1 p-2 border rounded"
+              placeholder="you@example.com"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-xs">Email is required</p>
+            )}
+          </div>
 
-        <div>
-          <label>Username</label>
-          <input {...register("username")} className="input-field" />
-          <p className="text-red-500 text-sm">{errors.username?.message}</p>
-        </div>
+          <div>
+            <label className="block text-sm font-medium">Password</label>
+            <input
+              type="password"
+              {...register("password", { required: true, minLength: 6 })}
+              className="w-full mt-1 p-2 border rounded"
+              placeholder="••••••••"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-xs">
+                Password must be at least 6 characters
+              </p>
+            )}
+          </div>
 
-        <div>
-          <label>Email</label>
-          <input {...register("email")} type="email" className="input-field" />
-          <p className="text-red-500 text-sm">{errors.email?.message}</p>
-        </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          >
+            Sign Up
+          </button>
+        </form>
 
-        <div>
-          <label>Password</label>
-          <input
-            {...register("password")}
-            type="password"
-            className="input-field"
-          />
-          <p className="text-red-500 text-sm">{errors.password?.message}</p>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded mt-4"
-        >
-          {isSubmitting ? "Signing up..." : "Sign Up"}
-        </button>
-      </form>
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <span
+            onClick={() => navigate("/login")}
+            className="text-blue-600 cursor-pointer hover:underline"
+          >
+            Log In
+          </span>
+        </p>
+      </div>
     </div>
   );
 };
