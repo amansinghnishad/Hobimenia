@@ -1,18 +1,15 @@
-import genAI from '../utils/gemini.js';
+const gemini = require("../utils/gemini");
 
-export const generateAIResponse = async (req, res) => {
+exports.generateText = async (req, res) => {
   try {
     const { prompt } = req.body;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    if (!prompt) return res.status(400).json({ msg: "Prompt is required" });
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    res.status(200).json({ text });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'AI generation failed' });
+    const suggestion = await gemini.generateText(prompt);
+    res.json({ suggestion });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Gemini API failed" });
   }
 };

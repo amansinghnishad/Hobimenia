@@ -12,7 +12,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
-import aiRoutes from "./routes/aiRoutes.js";
+// import aiRoutes from "./routes/aiRoutes.js";
 
 // Init
 dotenv.config();
@@ -48,7 +48,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
-app.use("/api/ai", aiRoutes);
+// app.use("/api/ai", aiRoutes);
 
 // Root route
 app.get("/", (req, res) => {

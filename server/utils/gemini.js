@@ -1,5 +1,18 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+const axios = require("axios");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-export default genAI;
+exports.generateText = async (prompt) => {
+  const endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+  };
+
+  const res = await axios.post(`${endpoint}?key=${GEMINI_API_KEY}`, body, {
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const suggestion = res.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  return suggestion || "No response from Gemini.";
+};

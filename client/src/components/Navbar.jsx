@@ -1,25 +1,42 @@
-// Navbar component
-import { Link, useLocation } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Navbar = () => {
-  const location = useLocation();
-  const isAuthPage =
-    location.pathname === "/login" || location.pathname === "/signup";
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  // if (isAuthPage) return null;
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
-    <nav className="bg-white shadow-sm p-4 flex justify-between items-center">
-      <Link to="/" className="text-indigo-600 font-bold text-xl">
+    <nav className="navbar">
+      <Link to="/" className="logo">
         Hobimenia
       </Link>
-      <div className="space-x-4">
-        <Link to="/login" className="text-gray-700 hover:text-indigo-600">
-          Login
-        </Link>
-        <Link to="/signup" className="text-gray-700 hover:text-indigo-600">
-          Sign Up
-        </Link>
+
+      <div className="nav-links">
+        {user ? (
+          <>
+            <Link to={`/profile/${user._id}`} className="nav-btn">
+              My Profile
+            </Link>
+            <button onClick={handleLogout} className="nav-btn logout-btn">
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="nav-btn">
+              Login
+            </Link>
+            <Link to="/signup" className="nav-btn">
+              Signup
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );

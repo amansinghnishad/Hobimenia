@@ -1,72 +1,95 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import Loader from "../components/Loader";
-import ImageUploader from "../components/ImageUploader";
+import { AuthContext } from "../contexts/AuthContext";
+import AIHelperButton from "../components/AIHelperButton";
+import { toast } from "react-toastify";
 
 const EditPostPage = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Post ID
   const navigate = useNavigate();
-  const [content, setContent] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { token } = useContext(AuthContext);
 
+  const [caption, setCaption] = useState("");
+  const [image, setImage] = useState(null);
+  const [currentImage, setCurrentImage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Fetch current post data
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await api.get(`/posts/${id}`);
-        setContent(res.data.content);
-        setImageUrl(res.data.imageUrl || "");
+        const res = await api.get(`/posts/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCaption(res.data.caption);
+        setCurrentImage(res.data.imageUrl); // assuming the image URL is returned
       } catch (err) {
-        console.error("Error loading post", err);
-      } finally {
-        setLoading(false);
+        console.error("Failed to fetch post", err);
       }
     };
     fetchPost();
-  }, [id]);
+  }, [id, token]);
 
-  const handleUpdate = async () => {
+  const handleFileChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("caption", caption);
+    if (image) formData.append("image", image);
+
     try {
-      await api.put(`/posts/${id}`, { content, imageUrl });
-      navigate(`/post/${id}`);
+      setLoading(true);
+      await api.put(`/posts/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toast.success("Post updated!");
+      setTimeout(() => navigate(`/posts/${id}`), 1500);
     } catch (err) {
-      console.error("Error updating post", err);
+      console.error("Failed to update post", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) return <Loader />;
-
   return (
-    <div className="max-w-xl mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-4">Edit Post</h1>
-      <textarea
-        className="w-full border rounded p-2 mb-4"
-        rows="5"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-      <input
-        className="w-full border rounded p-2 mb-4"
-        placeholder="Image URL (optional)"
-        value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
-      />
-      <ImageUploader onUpload={(url) => setImageUrl(url)} />
+    <div className="edit-post-page">
+      <h2>Edit Post</h2>
 
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt="Preview"
-          className="mt-4 w-full rounded shadow"
+      <form onSubmit={handleUpdate}>
+        <textarea
+          placeholder="Update your caption..."
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          rows={4}
         />
-      )}
-      <button
-        onClick={handleUpdate}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Save Changes
-      </button>
+
+        {currentImage && !image && (
+          <img
+            src={currentImage}
+            alt="Current Post"
+            className="current-image-preview"
+          />
+        )}
+
+        <input type="file" accept="image/*" onChange={handleFileChange} />
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Updating..." : "Update Post"}
+        </button>
+      </form>
+
+      <div className="ai-helper-wrapper">
+        <h4>Need a better caption?</h4>
+        <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
+      </div>
     </div>
   );
 };

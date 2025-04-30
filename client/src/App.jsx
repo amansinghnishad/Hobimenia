@@ -8,56 +8,48 @@ import PostDetailPage from "./pages/PostDetailPage";
 import HeroPage from "./pages/HeroPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditPostPage from "./pages/EditPostPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<HeroPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+    <>
+      <Routes>
+        <Route path="/" element={<HeroPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
-      {/* Protected Routes */}
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/create"
-        element={
-          <ProtectedRoute>
-            <CreatePostPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/profile/:id"
-        element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/post/:id"
-        element={
-          <ProtectedRoute>
-            <PostDetailPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/edit-post/:id"
-        element={
-          <PrivateRoute>
-            <EditPostPage />
-          </PrivateRoute>
-        }
-      />
-    </Routes>
+        {/* Protected Routes */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/profile/:username" element={<ProfilePage />} />
+
+        <Route
+          path="/profile/:id"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/post/:id"
+          element={
+            <ProtectedRoute>
+              <PostDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/edit-post/:id" element={<EditPostPage />} />
+      </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 };
 

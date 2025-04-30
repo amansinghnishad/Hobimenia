@@ -1,87 +1,69 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
-import api from "../api/axios";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
+import { AuthContext } from "../contexts/AuthContext";
 import AIHelperButton from "../components/AIHelperButton";
-import ImageUploader from "../components/ImageUploader";
+import { toast } from "react-toastify";
 
 const CreatePostPage = () => {
-  const { user } = useContext(AuthContext);
-  const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleImageChange = (e) => {
+  const [caption, setCaption] = useState("");
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!content.trim() && !image) return;
-
     const formData = new FormData();
-    formData.append("content", content);
+    formData.append("caption", caption);
     if (image) formData.append("image", image);
 
     try {
       setLoading(true);
       await api.post("/posts", formData, {
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-      navigate("/"); // redirect to HomePage
+      toast.success("Post created successfully!");
+      setTimeout(() => navigate("/"), 1500); // Give time for toast
     } catch (err) {
-      console.error("Post creation failed:", err);
+      console.error("Failed to create post", err);
+      toast.error("Failed to create post. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 px-4">
-      <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Create New Post</h2>
+    <div className="create-post-page">
+      <h2>Create New Post</h2>
 
-        <form onSubmit={handleSubmit}>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="w-full p-3 border rounded-md mb-4"
-            placeholder="What's on your mind?"
-            rows="4"
-            required={!image}
-          />
+      <form onSubmit={handleSubmit}>
+        <textarea
+          placeholder="Write your caption or thought..."
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          rows={4}
+        />
 
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="mb-4"
-          />
-          <ImageUploader onUpload={(url) => setImageUrl(url)} />
-          {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Preview"
-              className="mt-4 w-full rounded shadow"
-            />
-          )}
+        <input type="file" accept="image/*" onChange={handleFileChange} />
 
-          <AIHelperButton
-            onResult={(text) => setContent((prev) => prev + "\n" + text)}
-          />
+        <button type="submit" disabled={loading}>
+          {loading ? "Posting..." : "Post"}
+        </button>
+      </form>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            {loading ? "Posting..." : "Post"}
-          </button>
-        </form>
+      <div className="ai-helper-wrapper">
+        <h4>Need help writing?</h4>
+        <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
       </div>
     </div>
   );

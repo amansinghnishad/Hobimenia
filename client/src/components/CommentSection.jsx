@@ -1,18 +1,18 @@
-import { useState, useEffect, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../api/axios";
-import { AuthContext } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const CommentSection = ({ postId }) => {
-  const { user } = useContext(AuthContext);
+  const { token, user } = useAuth();
   const [comments, setComments] = useState([]);
-  const [input, setInput] = useState("");
+  const [newComment, setNewComment] = useState("");
 
   const fetchComments = async () => {
     try {
       const res = await api.get(`/comments/${postId}`);
       setComments(res.data);
     } catch (err) {
-      console.error("Error fetching comments", err);
+      console.error("Failed to load comments", err);
     }
   };
 
@@ -20,41 +20,56 @@ const CommentSection = ({ postId }) => {
     fetchComments();
   }, [postId]);
 
-  const addComment = async () => {
-    if (!input.trim()) return;
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
     try {
-      const res = await api.post(`/comments/${postId}`, { text: input });
-      setComments([...comments, res.data]);
-      setInput("");
+      await api.post(
+        `/comments/${postId}`,
+        { text: newComment },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setNewComment("");
+      fetchComments(); // Refresh comments
     } catch (err) {
-      console.error("Failed to add comment", err);
+      console.error("Failed to post comment", err);
+    }
+  };
+
+  const handleDelete = async (commentId) => {
+    try {
+      await api.delete(`/comments/${postId}/${commentId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchComments(); // Refresh
+    } catch (err) {
+      console.error("Failed to delete comment", err);
     }
   };
 
   return (
-    <div className="mt-4">
-      <h4 className="font-semibold mb-2">Comments</h4>
-      {comments.map((c) => (
-        <div key={c._id} className="border-b py-2">
-          <p className="text-sm font-semibold">{c.user.username}</p>
-          <p className="text-gray-700">{c.text}</p>
-        </div>
-      ))}
-
-      <div className="mt-3 flex items-center gap-2">
+    <div className="comment-section">
+      <form onSubmit={handleCommentSubmit}>
         <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          type="text"
           placeholder="Write a comment..."
-          className="flex-1 border rounded px-2 py-1"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
         />
-        <button
-          onClick={addComment}
-          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-        >
-          Send
-        </button>
-      </div>
+        <button type="submit">Post</button>
+      </form>
+
+      <ul>
+        {comments.map((comment) => (
+          <li key={comment._id}>
+            <strong>{comment.author.username}</strong>: {comment.text}
+            {comment.author._id === user._id && (
+              <button onClick={() => handleDelete(comment._id)}>🗑️</button>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

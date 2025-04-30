@@ -1,47 +1,57 @@
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import api from "../api/axios";
+import { AuthContext } from "../contexts/AuthContext";
 
-const AIHelperButton = ({ onResult }) => {
+const AIHelperButton = ({ onSuggestionClick }) => {
+  const { token } = useContext(AuthContext);
+
   const [prompt, setPrompt] = useState("");
+  const [suggestion, setSuggestion] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
     setLoading(true);
-    setError("");
-
     try {
-      const res = await api.post("/ai/generate", { prompt });
-      onResult(res.data.text); // Pass generated result to parent
-      setPrompt("");
-    } catch (err) {
-      setError("Failed to generate response.");
-      console.error(err);
+      const res = await api.post(
+        "/ai/generate",
+        { prompt },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSuggestion(res.data.suggestion);
+    } catch (error) {
+      setSuggestion("❌ Failed to generate. Please try again.");
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-4 border rounded shadow mt-4 bg-gray-50">
-      <h3 className="text-lg font-semibold mb-2">Need inspiration? Ask AI</h3>
+    <div className="ai-helper">
       <textarea
-        className="w-full p-2 border rounded mb-2"
-        rows={2}
-        placeholder="Type your idea or ask for help..."
+        placeholder="Describe what kind of post or idea you want help with..."
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
+        rows={4}
       />
-      <button
-        className="bg-purple-600 text-white px-3 py-1 rounded disabled:opacity-60"
-        onClick={handleGenerate}
-        disabled={loading}
-      >
-        {loading ? "Thinking..." : "Ask AI"}
+      <button onClick={handleGenerate} disabled={loading}>
+        {loading ? "Generating..." : "Get AI Suggestion"}
       </button>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {suggestion && (
+        <div
+          className="ai-response"
+          onClick={() => onSuggestionClick?.(suggestion)}
+        >
+          <strong>Suggestion (click to use):</strong>
+          <p>{suggestion}</p>
+        </div>
+      )}
     </div>
   );
 };
