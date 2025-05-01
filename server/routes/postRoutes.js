@@ -8,6 +8,7 @@ import {
 import { protect } from "../middlewares/authMiddleware.js";
 import parser from "../middlewares/uploadMiddleware.js";
 
+
 const router = express.Router();
 
 router.post("/create", protect, parser.single("image"), createPost);

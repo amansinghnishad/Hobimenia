@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { login } from "../services/authService";
-const { login: loginContext } = useAuth();
+import { useAuth } from "../contexts/AuthContext";
 
 const schema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -12,6 +12,8 @@ const schema = yup.object({
 });
 
 const LoginPage = () => {
+  const { login: loginContext } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -26,11 +28,16 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     try {
       const res = await login(data);
-      if (res.token) {
+      console.log("LOGIN RESPONSE:", res);
+
+      if (res && res.token && res.user) {
         loginContext(res.user, res.token);
         navigate("/home");
+      } else {
+        setError("Invalid login response");
       }
     } catch (err) {
+      console.error("Login error:", err);
       setError(err.response?.data?.message || "Login failed");
     }
   };

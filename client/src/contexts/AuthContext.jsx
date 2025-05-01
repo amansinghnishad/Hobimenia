@@ -10,12 +10,19 @@ export const AuthProvider = ({ children }) => {
 
   // Load user/token from localStorage on mount
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("hob_user"));
+    const storedUserRaw = localStorage.getItem("hob_user");
     const storedToken = localStorage.getItem("hob_token");
 
-    if (storedUser && storedToken) {
-      setUser(storedUser);
-      setToken(storedToken);
+    try {
+      const parsedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
+
+      if (parsedUser && storedToken) {
+        setUser(parsedUser);
+        setToken(storedToken);
+      }
+    } catch (error) {
+      console.error("Failed to parse stored user JSON:", error);
+      localStorage.removeItem("hob_user"); // Clean up bad data
     }
   }, []);
 

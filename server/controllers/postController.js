@@ -1,5 +1,26 @@
 import Post from "../models/Post.js";
 
+// CREATE Post
+export const createPost = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const { caption } = req.body;
+    const imageUrl = req.file?.path; // Cloudinary uploads via uploadMiddleware
+
+    const newPost = new Post({
+      caption,
+      imageUrl,
+      author: userId,
+    });
+
+    const savedPost = await newPost.save();
+    res.status(201).json(savedPost);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to create post", error: err.message });
+  }
+};
+
 // LIKE/UNLIKE Post
 export const toggleLikePost = async (req, res) => {
   const postId = req.params.id;
@@ -71,3 +92,5 @@ export const deletePost = async (req, res) => {
     res.status(500).json({ message: "Failed to delete post", error: err.message });
   }
 };
+
+

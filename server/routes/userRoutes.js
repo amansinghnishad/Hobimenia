@@ -1,10 +1,10 @@
 import express from "express";
-import { protect } from "../middlewares/authMiddleware.js";
 import parser from "../middlewares/uploadMiddleware.js";
-import { updateProfilePic } from "../controllers/userController.js";
+import { protect } from "../middlewares/authMiddleware.js";
+import { getUserProfile, updateProfilePic } from "../controllers/userController.js";
 
 const router = express.Router();
-router.get("/:username", authMiddleware, getUserProfile);
+router.get("/:username", protect, getUserProfile);
 
 router.patch("/profile-pic", protect, parser.single("image"), updateProfilePic);
 
