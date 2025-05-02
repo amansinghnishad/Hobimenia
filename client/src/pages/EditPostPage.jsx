@@ -60,34 +60,44 @@ const EditPostPage = () => {
   };
 
   return (
-    <div className="edit-post-page">
-      <h2>Edit Post</h2>
+    <div className="max-w-xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
+      <h2 className="text-xl font-bold mb-4">Edit Post</h2>
 
-      <form onSubmit={handleUpdate}>
+      <form onSubmit={handleUpdate} className="space-y-4">
         <textarea
           placeholder="Update your caption..."
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           rows={4}
+          className="w-full border rounded p-2"
         />
 
         {currentImage && !image && (
           <img
             src={currentImage}
             alt="Current Post"
-            className="current-image-preview"
+            className="w-full rounded mb-2 max-h-96 object-cover"
           />
         )}
 
-        <input type="file" accept="image/*" onChange={handleFileChange} />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="block"
+        />
 
-        <button type="submit" disabled={loading}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+        >
           {loading ? "Updating..." : "Update Post"}
         </button>
       </form>
 
-      <div className="ai-helper-wrapper">
-        <h4>Need a better caption?</h4>
+      <div className="ai-helper-wrapper mt-6">
+        <h4 className="font-semibold mb-2">Need a better caption?</h4>
         <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
       </div>
     </div>

@@ -55,17 +55,21 @@ const LoginPage = () => {
         {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
 
         <div>
-          <label>Email</label>
-          <input type="email" {...register("email")} className="input-field" />
+          <label className="block text-sm font-medium">Email</label>
+          <input
+            type="email"
+            {...register("email")}
+            className="w-full mt-1 p-2 border rounded"
+          />
           <p className="text-red-500 text-sm">{errors.email?.message}</p>
         </div>
 
         <div>
-          <label>Password</label>
+          <label className="block text-sm font-medium">Password</label>
           <input
             type="password"
             {...register("password")}
-            className="input-field"
+            className="w-full mt-1 p-2 border rounded"
           />
           <p className="text-red-500 text-sm">{errors.password?.message}</p>
         </div>

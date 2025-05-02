@@ -49,23 +49,43 @@ const CommentSection = ({ postId }) => {
   };
 
   return (
-    <div className="comment-section">
-      <form onSubmit={handleCommentSubmit}>
+    <div className="mt-6">
+      <form onSubmit={handleCommentSubmit} className="flex gap-2 mb-4">
         <input
           type="text"
           placeholder="Write a comment..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
+          className="flex-1 border rounded px-3 py-2"
         />
-        <button type="submit">Post</button>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Post
+        </button>
       </form>
 
-      <ul>
+      <ul className="space-y-2">
         {comments.map((comment) => (
-          <li key={comment._id}>
-            <strong>{comment.author.username}</strong>: {comment.text}
+          <li
+            key={comment._id}
+            className="bg-gray-100 rounded px-3 py-2 flex items-center justify-between"
+          >
+            <span>
+              <strong className="text-blue-700">
+                {comment.author.username}
+              </strong>
+              : {comment.text}
+            </span>
             {comment.author._id === user._id && (
-              <button onClick={() => handleDelete(comment._id)}>🗑️</button>
+              <button
+                onClick={() => handleDelete(comment._id)}
+                className="ml-2 text-red-500 hover:underline text-sm"
+                title="Delete"
+              >
+                🗑️
+              </button>
             )}
           </li>
         ))}

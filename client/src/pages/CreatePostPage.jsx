@@ -4,6 +4,7 @@ import api from "../api/axios";
 import { AuthContext } from "../contexts/AuthContext";
 import AIHelperButton from "../components/AIHelperButton";
 import { toast } from "react-toastify";
+import Navbar from "../components/Navbar";
 
 const CreatePostPage = () => {
   const { token } = useContext(AuthContext);
@@ -43,29 +44,43 @@ const CreatePostPage = () => {
   };
 
   return (
-    <div className="create-post-page">
-      <h2>Create New Post</h2>
+    <>
+      {" "}
+      <Navbar />
+      <div className="max-w-xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
+        <h2 className="text-xl font-bold mb-4">Create New Post</h2>
 
-      <form onSubmit={handleSubmit}>
-        <textarea
-          placeholder="Write your caption or thought..."
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-          rows={4}
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <textarea
+            placeholder="Write your caption or thought..."
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+            rows={4}
+            className="w-full border rounded p-2"
+          />
 
-        <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="block"
+          />
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Posting..." : "Post"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          >
+            {loading ? "Posting..." : "Post"}
+          </button>
+        </form>
 
-      <div className="ai-helper-wrapper">
-        <h4>Need help writing?</h4>
-        <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
+        <div className="ai-helper-wrapper mt-6">
+          <h4 className="font-semibold mb-2">Need help writing?</h4>
+          <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

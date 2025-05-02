@@ -28,7 +28,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/profile/:username" element={<ProfilePage />} />
+        {/* <Route path="/profile/:username" element={<ProfilePage />} /> */}
 
         <Route
           path="/profile/:id"
@@ -47,6 +47,14 @@ const App = () => {
           }
         />
         <Route path="/edit-post/:id" element={<EditPostPage />} />
+        <Route
+          path="/create-post"
+          element={
+            <ProtectedRoute>
+              <CreatePostPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
     </>

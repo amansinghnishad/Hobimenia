@@ -35,8 +35,8 @@ const ImageUploader = ({ onUpload }) => {
   return (
     <div
       {...getRootProps()}
-      className={`p-4 border-2 border-dashed rounded text-center cursor-pointer ${
-        isDragActive ? "border-blue-500" : "border-gray-400"
+      className={`p-4 border-2 border-dashed rounded text-center cursor-pointer transition ${
+        isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-400 bg-white"
       }`}
     >
       <input {...getInputProps()} />

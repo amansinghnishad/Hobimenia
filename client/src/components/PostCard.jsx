@@ -42,27 +42,47 @@ const PostCard = ({ post, onDeleted, onUpdated }) => {
   };
 
   return (
-    <div className="post-card">
-      <div className="post-header">
-        <h4>{post.author?.username}</h4>
+    <div className="bg-white rounded-lg shadow p-4">
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="font-semibold text-lg">{post.author?.username}</h4>
         {user?._id === post.author?._id && (
-          <div className="post-actions">
-            <button onClick={handleEdit}>Edit</button>
-            <button onClick={handleDelete} style={{ color: "red" }}>
+          <div className="flex gap-2">
+            <button
+              onClick={handleEdit}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-red-500 hover:underline text-sm"
+            >
               Delete
             </button>
           </div>
         )}
       </div>
-      <p>{post.caption}</p>
+      <p className="mb-2">{post.caption}</p>
       {post.imageUrl && (
-        <img src={post.imageUrl} alt="Post" className="post-image" />
+        <img
+          src={post.imageUrl}
+          alt="Post"
+          className="w-full rounded-md mb-2 max-h-96 object-cover"
+        />
       )}
-      <div className="post-footer">
-        <button onClick={handleLike}>
+      <div className="flex items-center gap-4 mt-2">
+        <button
+          onClick={handleLike}
+          className="flex items-center gap-1 text-lg"
+        >
           {liked ? "❤️" : "🤍"} {likesCount}
         </button>
-        <button onClick={() => navigate(`/posts/${post._id}`)}>Comments</button>
+        <button
+          onClick={() => navigate(`/posts/${post._id}`)}
+          className="text-blue-500 hover:underline text-sm"
+        >
+          Comments
+        </button>
       </div>
     </div>
   );

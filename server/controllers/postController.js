@@ -93,4 +93,20 @@ export const deletePost = async (req, res) => {
   }
 };
 
+export const getAllPosts = async (req, res) => {
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch posts" });
+  }
+};
 
+export const getPostsByUser = async (req, res) => {
+  try {
+    const posts = await Post.find({ creator: req.params.id }).sort({ createdAt: -1 });
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch user posts", error: err.message });
+  }
+};

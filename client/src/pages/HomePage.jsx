@@ -1,5 +1,6 @@
 import PostFeed from "../components/PostFeed";
 import Navbar from "../components/Navbar";
+import CreatePostButton from "../components/CreatePostButton";
 
 const HomePage = () => {
   return (
@@ -9,6 +10,7 @@ const HomePage = () => {
         <h1 className="text-2xl font-semibold mb-4">Recent Posts</h1>
         <PostFeed />
       </div>
+      <CreatePostButton />
     </div>
   );
 };

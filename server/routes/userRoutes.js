@@ -4,8 +4,7 @@ import { protect } from "../middlewares/authMiddleware.js";
 import { getUserProfile, updateProfilePic } from "../controllers/userController.js";
 
 const router = express.Router();
-router.get("/:username", protect, getUserProfile);
-
+router.get("/:id", protect, getUserProfile);
 router.patch("/profile-pic", protect, parser.single("image"), updateProfilePic);
 
 
