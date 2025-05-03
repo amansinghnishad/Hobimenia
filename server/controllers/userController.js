@@ -17,8 +17,9 @@ export const updateProfilePic = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
   try {
-    const username = req.params.username;
-    const user = await User.findOne({ username }).select("-password");
+    const userId = req.params.id; // ✅ Use req.params.id
+    // ✅ Find user by ID
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -26,15 +27,7 @@ export const getUserProfile = async (req, res) => {
 
     res.status(200).json(user);
   } catch (err) {
+    console.error("Get User Profile Error:", err); // Add specific logging
     res.status(500).json({ message: "Failed to fetch user profile", error: err.message });
   }
 };
-const getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id)
-    if (!user) return res.status(404).json({ message: "User not found" })
-    res.status(200).json(user)
-  } catch (err) {
-    res.status(500).json({ message: "Server error" })
-  }
-}

@@ -26,8 +26,8 @@ const CommentSection = ({ postId }) => {
 
     try {
       await api.post(
-        `/comments/${postId}`,
-        { text: newComment },
+        `/comments`,
+        { postId: postId, text: newComment },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setNewComment("");
@@ -39,7 +39,7 @@ const CommentSection = ({ postId }) => {
 
   const handleDelete = async (commentId) => {
     try {
-      await api.delete(`/comments/${postId}/${commentId}`, {
+      await api.delete(`/comments/${commentId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchComments(); // Refresh

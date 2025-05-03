@@ -6,6 +6,9 @@ import AIHelperButton from "../components/AIHelperButton";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 
+// ✅ Added for Markdown rendering
+import ReactMarkdown from "react-markdown";
+
 const CreatePostPage = () => {
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -34,7 +37,8 @@ const CreatePostPage = () => {
         },
       });
       toast.success("Post created successfully!");
-      setTimeout(() => navigate("/"), 1500); // Give time for toast
+      // ✅ Changed navigation target from '/' to '/home'
+      setTimeout(() => navigate("/home"), 1500); // Give time for toast
     } catch (err) {
       console.error("Failed to create post", err);
       toast.error("Failed to create post. Please try again.");
@@ -45,19 +49,26 @@ const CreatePostPage = () => {
 
   return (
     <>
-      {" "}
       <Navbar />
       <div className="max-w-xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
         <h2 className="text-xl font-bold mb-4">Create New Post</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <textarea
-            placeholder="Write your caption or thought..."
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            rows={4}
-            className="w-full border rounded p-2"
-          />
+          {/* ✅ MODIFIED: Combined caption input and markdown preview */}
+          <div className="space-y-2">
+            <textarea
+              placeholder="Write your caption or thought using Markdown..."
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              rows={4}
+              className="w-full border rounded p-2"
+            />
+
+            {/* ✅ Renders Markdown live under textarea */}
+            <div className="text-sm p-3 border bg-gray-50 rounded whitespace-pre-wrap">
+              <ReactMarkdown>{caption}</ReactMarkdown>
+            </div>
+          </div>
 
           <input
             type="file"

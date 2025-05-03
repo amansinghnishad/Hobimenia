@@ -1,15 +1,15 @@
-const gemini = require("../utils/gemini");
+import { generateText as geminiGenerateText } from "../utils/gemini.js";
 
-exports.generateText = async (req, res) => {
+export const generateText = async (req, res) => {
   try {
     const { prompt } = req.body;
 
     if (!prompt) return res.status(400).json({ msg: "Prompt is required" });
 
-    const suggestion = await gemini.generateText(prompt);
+    const suggestion = await geminiGenerateText(prompt);
     res.json({ suggestion });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: "Gemini API failed" });
+    res.status(500).json({ msg: err.message || "Gemini API failed" });
   }
 };

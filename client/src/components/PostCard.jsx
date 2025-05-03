@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
+import ReactMarkdown from "react-markdown";
 
 const PostCard = ({ post, onDeleted, onUpdated }) => {
   const { user, token } = useContext(AuthContext);
@@ -44,7 +45,12 @@ const PostCard = ({ post, onDeleted, onUpdated }) => {
   return (
     <div className="bg-white rounded-lg shadow p-4">
       <div className="flex items-center justify-between mb-2">
-        <h4 className="font-semibold text-lg">{post.author?.username}</h4>
+        <Link
+          to={`/profile/${post.author?._id}`}
+          className="font-semibold text-lg text-blue-700 hover:underline"
+        >
+          {post.author?.username}
+        </Link>
         {user?._id === post.author?._id && (
           <div className="flex gap-2">
             <button
@@ -78,7 +84,7 @@ const PostCard = ({ post, onDeleted, onUpdated }) => {
           {liked ? "❤️" : "🤍"} {likesCount}
         </button>
         <button
-          onClick={() => navigate(`/posts/${post._id}`)}
+          onClick={() => navigate(`/post/${post._id}`)}
           className="text-blue-500 hover:underline text-sm"
         >
           Comments

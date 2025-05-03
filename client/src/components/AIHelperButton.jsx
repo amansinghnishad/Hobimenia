@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../contexts/AuthContext";
+import ReactMarkdown from "react-markdown";
 
 const AIHelperButton = ({ onSuggestionClick }) => {
   const { token } = useContext(AuthContext);
@@ -54,7 +55,7 @@ const AIHelperButton = ({ onSuggestionClick }) => {
           onClick={() => onSuggestionClick?.(suggestion)}
         >
           <strong>Suggestion (click to use):</strong>
-          <p>{suggestion}</p>
+          <ReactMarkdown>{suggestion}</ReactMarkdown>
         </div>
       )}
     </div>
