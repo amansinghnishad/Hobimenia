@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import PostCard from "./PostCard";
 import Loader from "./Loader";
+import "../css/componentCSS/PostFeed.css";
 
 const PostFeed = () => {
   const [posts, setPosts] = useState([]);
@@ -28,21 +29,19 @@ const PostFeed = () => {
     );
   };
 
-  if (loading) return <Loader />;
-
-  if (posts.length === 0) {
-    return (
-      <div className="text-center text-gray-500 mt-10">
-        No posts yet. Start by creating your first one!
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-4">
-      {posts.map((post) => (
-        <PostCard key={post._id} post={post} onDeleted={handlePostDeleted} />
-      ))}
+    <div className="post-feed-container">
+      {loading ? (
+        <Loader />
+      ) : posts.length === 0 ? (
+        <div className="post-feed-empty">
+          No posts yet. Be the first to share something!
+        </div>
+      ) : (
+        posts.map((post) => (
+          <PostCard key={post._id} post={post} onDeleted={handlePostDeleted} />
+        ))
+      )}
     </div>
   );
 };

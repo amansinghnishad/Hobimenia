@@ -1,0 +1,42 @@
+/* HomePage Normal CSS */
+.homepage-outer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eff6ff 0%, #ede9fe 100%);
+  padding-top: 8rem;
+}
+.homepage-inner {
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.5rem 1rem;
+}
+.homepage-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #2563eb;
+  text-shadow: 0 2px 8px #c7d2fe;
+  animation: fadeIn 0.7s;
+}
+.homepage-feed {
+  animation: fadeInUp 0.7s;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

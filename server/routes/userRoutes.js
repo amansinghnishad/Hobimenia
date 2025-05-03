@@ -5,7 +5,7 @@ import { getUserProfile, updateProfilePic } from "../controllers/userController.
 
 const router = express.Router();
 router.get("/:id", protect, getUserProfile);
-router.patch("/profile-pic", protect, parser.single("image"), updateProfilePic);
+router.patch("/profile-pic", protect, parser.single("profilePic"), updateProfilePic);
 
 
 export default router;

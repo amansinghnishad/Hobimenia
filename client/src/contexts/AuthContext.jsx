@@ -1,28 +1,29 @@
+// client/src/contexts/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [isInitializing, setIsInitializing] = useState(true);
   const navigate = useNavigate();
 
-  // Load user/token from localStorage on mount
   useEffect(() => {
     const storedUserRaw = localStorage.getItem("hob_user");
     const storedToken = localStorage.getItem("hob_token");
-
     try {
       const parsedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
-
       if (parsedUser && storedToken) {
         setUser(parsedUser);
         setToken(storedToken);
       }
     } catch (error) {
-      console.error("Failed to parse stored user JSON:", error);
-      localStorage.removeItem("hob_user"); // Clean up bad data
+      localStorage.removeItem("hob_user");
+    } finally {
+      setIsInitializing(false);
     }
   }, []);
 
@@ -38,8 +39,17 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.removeItem("hob_user");
     localStorage.removeItem("hob_token");
+    setIsInitializing(false);
     navigate("/login");
   };
+
+  if (isInitializing) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider

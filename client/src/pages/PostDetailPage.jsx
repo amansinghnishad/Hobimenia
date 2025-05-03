@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import api from "../api/axios";
 import { AuthContext } from "../contexts/AuthContext";
 import CommentSection from "../components/CommentSection";
+import Navbar from "../components/Navbar";
+import "../css/pagesCSS/PostDetailPage.css";
 
 const PostDetailPage = () => {
   const { id } = useParams();
@@ -44,29 +46,55 @@ const PostDetailPage = () => {
   if (!post) return <p>Loading...</p>;
 
   return (
-    <div className="max-w-xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
-      <h3 className="text-lg font-semibold mb-2">
-        {post.author?.username}'s Post
-      </h3>
-      <p className="mb-3">{post.caption}</p>
-      {post.imageUrl && (
-        <img
-          src={post.imageUrl}
-          alt="Post"
-          className="w-full rounded mb-3 max-h-96 object-cover"
-        />
-      )}
-      <div className="mb-4">
-        <button
-          onClick={handleLike}
-          className="flex items-center gap-1 text-lg text-red-500"
-        >
-          {liked ? "❤️" : "🤍"} {likesCount}
-        </button>
+    <>
+      <Navbar />
+      <div className="postdetail-outer">
+        <div className="postdetail-card">
+          <div className="postdetail-header">
+            {post.author?.profilePic ? (
+              <img
+                src={post.author.profilePic}
+                alt={post.author.username}
+                className="postdetail-avatar"
+              />
+            ) : (
+              <div className="postdetail-avatar-fallback">
+                {post.author?.username?.[0]?.toUpperCase() || "?"}
+              </div>
+            )}
+            <span className="postdetail-username">{post.author?.username}</span>
+            <span className="postdetail-date">
+              {new Date(post.createdAt).toLocaleString()}
+            </span>
+          </div>
+          <div className="postdetail-caption">{post.caption}</div>
+          {post.imageUrl && (
+            <img
+              src={post.imageUrl}
+              alt="Post"
+              className="postdetail-img"
+              style={{
+                width: "100%",
+                height: "auto",
+                maxHeight: "384px",
+                objectFit: "contain",
+              }}
+            />
+          )}
+          <div className="postdetail-like-row">
+            <button
+              onClick={handleLike}
+              className={`postdetail-like-btn${liked ? " liked" : ""}`}
+            >
+              {liked ? "❤️" : "🤍"} {likesCount}
+            </button>
+          </div>
+          <div className="postdetail-comment-section">
+            <CommentSection postId={id} />
+          </div>
+        </div>
       </div>
-
-      <CommentSection postId={id} />
-    </div>
+    </>
   );
 };
 

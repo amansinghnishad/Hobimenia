@@ -1,15 +1,17 @@
 // CreatePostButton component
 import { useNavigate } from "react-router-dom";
+import "../css/componentCSS/CreatePostButton.css";
 
 const CreatePostButton = () => {
   const navigate = useNavigate();
   return (
     <button
-      className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-3xl hover:bg-blue-700 transition"
+      className="create-post-btn"
       onClick={() => navigate("/create-post")}
       title="Create Post"
+      aria-label="Create Post"
     >
-      +
+      <span className="-mt-1">+</span>
     </button>
   );
 };

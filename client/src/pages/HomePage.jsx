@@ -1,14 +1,17 @@
 import PostFeed from "../components/PostFeed";
 import Navbar from "../components/Navbar";
 import CreatePostButton from "../components/CreatePostButton";
+import "../css/pagesCSS/HomePage.css";
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="homepage-outer">
       <Navbar />
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        <h1 className="text-2xl font-semibold mb-4">Recent Posts</h1>
-        <PostFeed />
+      <div className="homepage-inner">
+        <h1 className="homepage-title">Recent Posts</h1>
+        <div className="homepage-feed">
+          <PostFeed />
+        </div>
       </div>
       <CreatePostButton />
     </div>

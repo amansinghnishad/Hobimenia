@@ -5,9 +5,8 @@ import { AuthContext } from "../contexts/AuthContext";
 import AIHelperButton from "../components/AIHelperButton";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
-
-// ✅ Added for Markdown rendering
 import ReactMarkdown from "react-markdown";
+import "../css/pagesCSS/CreatePostPage.css";
 
 const CreatePostPage = () => {
   const { token } = useContext(AuthContext);
@@ -37,8 +36,7 @@ const CreatePostPage = () => {
         },
       });
       toast.success("Post created successfully!");
-      // ✅ Changed navigation target from '/' to '/home'
-      setTimeout(() => navigate("/home"), 1500); // Give time for toast
+      setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
       console.error("Failed to create post", err);
       toast.error("Failed to create post. Please try again.");
@@ -50,45 +48,42 @@ const CreatePostPage = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
-        <h2 className="text-xl font-bold mb-4">Create New Post</h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* ✅ MODIFIED: Combined caption input and markdown preview */}
-          <div className="space-y-2">
-            <textarea
-              placeholder="Write your caption or thought using Markdown..."
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-              rows={4}
-              className="w-full border rounded p-2"
-            />
-
-            {/* ✅ Renders Markdown live under textarea */}
-            <div className="text-sm p-3 border bg-gray-50 rounded whitespace-pre-wrap">
-              <ReactMarkdown>{caption}</ReactMarkdown>
+      <div className="create-postpage-outer">
+        <div className="create-postpage-card">
+          <h2 className="create-postpage-title">Create New Post</h2>
+          <form onSubmit={handleSubmit} className="create-postpage-form">
+            <div className="create-postpage-form-group">
+              <textarea
+                placeholder="Write your caption or thought using Markdown..."
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                rows={4}
+                className="create-postpage-textarea"
+              />
+              <div className="create-postpage-markdown-preview">
+                <ReactMarkdown>{caption}</ReactMarkdown>
+              </div>
             </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="create-postpage-file-input"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="create-postpage-submit-btn"
+            >
+              {loading ? "Posting..." : "Post"}
+            </button>
+          </form>
+          <div className="create-postpage-ai-helper">
+            <h4 className="font-semibold mb-2 text-gray-700">
+              Need help writing?
+            </h4>
+            <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
           </div>
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="block"
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          >
-            {loading ? "Posting..." : "Post"}
-          </button>
-        </form>
-
-        <div className="ai-helper-wrapper mt-6">
-          <h4 className="font-semibold mb-2">Need help writing?</h4>
-          <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
         </div>
       </div>
     </>

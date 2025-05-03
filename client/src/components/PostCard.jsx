@@ -3,6 +3,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import ReactMarkdown from "react-markdown";
+import "../css/componentCSS/PostCard.css";
 
 const PostCard = ({ post, onDeleted, onUpdated }) => {
   const { user, token } = useContext(AuthContext);
@@ -43,49 +44,71 @@ const PostCard = ({ post, onDeleted, onUpdated }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <div className="flex items-center justify-between mb-2">
-        <Link
-          to={`/profile/${post.author?._id}`}
-          className="font-semibold text-lg text-blue-700 hover:underline"
-        >
-          {post.author?.username}
-        </Link>
+    <div className="post-card">
+      <div className="post-card-header">
+        <div className="post-card-userinfo">
+          {post.author?.profilePic ? (
+            <img
+              src={post.author.profilePic}
+              alt={post.author.username}
+              className="post-card-avatar"
+              style={{
+                objectFit: "cover",
+                width: "auto",
+                height: "auto",
+                maxWidth: "40px",
+                maxHeight: "40px",
+              }}
+            />
+          ) : (
+            <div className="post-card-avatar">
+              {post.author?.username?.[0]?.toUpperCase() || "?"}
+            </div>
+          )}
+          <Link
+            to={`/profile/${post.author?._id}`}
+            className="post-card-username"
+          >
+            {post.author?.username}
+          </Link>
+        </div>
         {user?._id === post.author?._id && (
-          <div className="flex gap-2">
-            <button
-              onClick={handleEdit}
-              className="text-blue-600 hover:underline text-sm"
-            >
+          <div>
+            <button onClick={handleEdit} className="post-card-btn-edit">
               Edit
             </button>
-            <button
-              onClick={handleDelete}
-              className="text-red-500 hover:underline text-sm"
-            >
+            <button onClick={handleDelete} className="post-card-btn-delete">
               Delete
             </button>
           </div>
         )}
       </div>
-      <p className="mb-2">{post.caption}</p>
+      <div className="post-card-caption">
+        <ReactMarkdown>{post.caption}</ReactMarkdown>
+      </div>
       {post.imageUrl && (
         <img
           src={post.imageUrl}
           alt="Post"
-          className="w-full rounded-md mb-2 max-h-96 object-cover"
+          className="post-card-img"
+          style={{
+            width: "100%",
+            height: "auto",
+            maxHeight: "384px",
+            objectFit: "contain",
+          }}
         />
       )}
-      <div className="flex items-center gap-4 mt-2">
+      <div>
         <button
           onClick={handleLike}
-          className="flex items-center gap-1 text-lg"
+          className={`post-card-like-btn${liked ? " liked" : ""}`}
         >
           {liked ? "❤️" : "🤍"} {likesCount}
         </button>
         <button
           onClick={() => navigate(`/post/${post._id}`)}
-          className="text-blue-500 hover:underline text-sm"
+          className="post-card-comment-btn"
         >
           Comments
         </button>

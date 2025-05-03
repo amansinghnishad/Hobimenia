@@ -3,12 +3,14 @@ import { useState } from "react";
 import { signup } from "../services/authService";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import "../css/pagesCSS/SignupPage.css";
 
 const SignupPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -25,70 +27,77 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white shadow-lg p-6 rounded-xl max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-4 text-center">Create Account</h2>
-        {errorMsg && <p className="text-red-500 text-sm mb-2">{errorMsg}</p>}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium">Username</label>
+    <div className="signuppage-outer">
+      <form onSubmit={handleSubmit(onSubmit)} className="signuppage-form">
+        <h2 className="signuppage-title">Sign Up</h2>
+
+        {errorMsg && <p className="signuppage-error">{errorMsg}</p>}
+
+        <div className="mb-5">
+          <label className="signuppage-label">Username</label>
+          <div className="signuppage-input-wrapper">
+            <span className="signuppage-icon">
+              <FaUser />
+            </span>
             <input
               type="text"
-              {...register("username", { required: true })}
-              className="w-full mt-1 p-2 border rounded"
-              placeholder="johndoe"
+              {...register("username", { required: "Username is required" })}
+              className="signuppage-input"
+              autoComplete="username"
+              placeholder="Enter your username"
             />
-            {errors.username && (
-              <p className="text-red-500 text-xs">Username is required</p>
-            )}
           </div>
+          <p className="signuppage-input-error">{errors.username?.message}</p>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium">Email</label>
+        <div className="mb-5">
+          <label className="signuppage-label">Email</label>
+          <div className="signuppage-input-wrapper">
+            <span className="signuppage-icon">
+              <FaEnvelope />
+            </span>
             <input
               type="email"
-              {...register("email", { required: true })}
-              className="w-full mt-1 p-2 border rounded"
-              placeholder="you@example.com"
+              {...register("email", { required: "Email is required" })}
+              className="signuppage-input"
+              autoComplete="email"
+              placeholder="Enter your email"
             />
-            {errors.email && (
-              <p className="text-red-500 text-xs">Email is required</p>
-            )}
           </div>
+          <p className="signuppage-input-error">{errors.email?.message}</p>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium">Password</label>
+        <div className="mb-6">
+          <label className="signuppage-label">Password</label>
+          <div className="signuppage-input-wrapper">
+            <span className="signuppage-icon">
+              <FaLock />
+            </span>
             <input
               type="password"
-              {...register("password", { required: true, minLength: 6 })}
-              className="w-full mt-1 p-2 border rounded"
-              placeholder="••••••••"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
+              className="signuppage-input"
+              autoComplete="new-password"
+              placeholder="Create a password"
             />
-            {errors.password && (
-              <p className="text-red-500 text-xs">
-                Password must be at least 6 characters
-              </p>
-            )}
           </div>
+          <p className="signuppage-input-error">{errors.password?.message}</p>
+        </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          >
-            Sign Up
-          </button>
-        </form>
-
-        <p className="text-sm text-center mt-4">
-          Already have an account?{" "}
-          <span
-            onClick={() => navigate("/login")}
-            className="text-blue-600 cursor-pointer hover:underline"
-          >
-            Log In
-          </span>
-        </p>
-      </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="signuppage-submit"
+        >
+          {isSubmitting ? "Signing up..." : "Sign Up"}
+        </button>
+      </form>
     </div>
   );
 };

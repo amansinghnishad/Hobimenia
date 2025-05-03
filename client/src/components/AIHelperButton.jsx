@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../contexts/AuthContext";
 import ReactMarkdown from "react-markdown";
+import "../css/componentCSS/AIHelperButton.css";
 
 const AIHelperButton = ({ onSuggestionClick }) => {
   const { token } = useContext(AuthContext);
@@ -34,28 +35,32 @@ const AIHelperButton = ({ onSuggestionClick }) => {
   };
 
   return (
-    <div className="mt-4 bg-gray-50 p-4 rounded-lg shadow">
+    <div className="ai-helper-container">
       <textarea
         placeholder="Describe what kind of post or idea you want help with..."
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         rows={3}
-        className="w-full border rounded p-2 mb-2"
+        className="ai-helper-textarea"
       />
       <button
         onClick={handleGenerate}
         disabled={loading}
-        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+        className="ai-helper-btn"
       >
         {loading ? "Generating..." : "Get AI Suggestion"}
       </button>
       {suggestion && (
         <div
-          className="mt-3 bg-white border rounded p-3 cursor-pointer hover:bg-indigo-50 transition"
+          className="ai-helper-suggestion"
           onClick={() => onSuggestionClick?.(suggestion)}
         >
-          <strong>Suggestion (click to use):</strong>
-          <ReactMarkdown>{suggestion}</ReactMarkdown>
+          <div className="ai-helper-suggestion-title">
+            <span>💡</span> Suggestion (click to use):
+          </div>
+          <div className="ai-helper-suggestion-text">
+            <ReactMarkdown>{suggestion}</ReactMarkdown>
+          </div>
         </div>
       )}
     </div>

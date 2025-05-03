@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-100 font-sans">
       <Routes>
         <Route path="/" element={<HeroPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -28,8 +28,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        {/* <Route path="/profile/:username" element={<ProfilePage />} /> */}
-
         <Route
           path="/profile/:id"
           element={
@@ -56,8 +54,8 @@ const App = () => {
           }
         />
       </Routes>
-      <ToastContainer position="top-right" autoClose={3000} />
-    </>
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+    </div>
   );
 };
 

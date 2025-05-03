@@ -1,0 +1,49 @@
+/* Loader/ShimmerUI Normal CSS */
+.loader-shimmer {
+  margin-bottom: 1.5rem;
+}
+.loader-shimmer-card {
+  background: linear-gradient(90deg, #eff6ff 0%, #ede9fe 50%, #fce7f3 100%);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 24px rgba(59, 130, 246, 0.1);
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  animation: shimmerPulse 1.5s infinite linear;
+}
+.loader-shimmer-avatar {
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #bfdbfe 0%, #c4b5fd 100%);
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+.loader-shimmer-line1 {
+  height: 1rem;
+  background: linear-gradient(90deg, #dbeafe 0%, #ede9fe 100%);
+  border-radius: 0.5rem;
+  width: 33%;
+}
+.loader-shimmer-line2 {
+  height: 0.75rem;
+  background: linear-gradient(90deg, #dbeafe 0%, #fce7f3 100%);
+  border-radius: 0.5rem;
+  width: 66%;
+}
+.loader-shimmer-line3 {
+  height: 0.75rem;
+  background: linear-gradient(90deg, #ede9fe 0%, #fce7f3 100%);
+  border-radius: 0.5rem;
+  width: 50%;
+}
+@keyframes shimmerPulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}

@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axios";
 import PostCard from "../components/PostCard";
 import { useAuth } from "../contexts/AuthContext";
 import Navbar from "../components/Navbar";
+import Loader from "../components/Loader";
+import { toast } from "react-toastify";
+import "../css/pagesCSS/ProfilePage.css";
 
 const ProfilePage = () => {
   const { id } = useParams();
-  const { user, token } = useAuth();
+  const { user, token, login: loginContext } = useAuth();
 
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const fetchProfile = async () => {
     setLoadingProfile(true);
@@ -47,6 +52,36 @@ const ProfilePage = () => {
     );
   };
 
+  const handleImageClick = () => {
+    if (user?._id === profile?._id && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (user?._id !== profile._id) return;
+    const formData = new FormData();
+    formData.append("profilePic", file);
+    setIsUploading(true);
+    try {
+      const res = await api.patch("/users/profile-pic", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setProfile((prev) => ({ ...prev, profilePic: res.data.profilePic }));
+      if (user._id === res.data._id) {
+        loginContext(res.data, token);
+      }
+      toast.success("Profile picture updated!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Upload failed");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   useEffect(() => {
     if (id) {
       fetchProfile();
@@ -60,23 +95,46 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-2xl mx-auto py-8 px-4">
-        <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center mb-8">
-          <img
-            src={profile.profilePic || "/assets/default-avatar.png"}
-            alt="avatar"
-            className="w-24 h-24 rounded-full mb-3 object-cover border"
+      <div className="profilepage-outer">
+        <div className="profilepage-card">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            style={{ display: "none" }}
+            disabled={isUploading || user?._id !== profile._id}
           />
-          <h2 className="text-2xl font-bold mb-1">@{profile.username}</h2>
+          <div
+            className={`profilepage-avatar-wrapper${
+              user?._id === profile?._id ? " editable" : ""
+            }`}
+            onClick={handleImageClick}
+          >
+            <img
+              src={profile.profilePic || "/assets/default-avatar.png"}
+              alt="avatar"
+              className={`profilepage-avatar${isUploading ? " uploading" : ""}`}
+            />
+            {user?._id === profile._id && !isUploading && (
+              <div className="profilepage-avatar-overlay">
+                <span className="profilepage-avatar-editicon">✏️</span>
+              </div>
+            )}
+            {isUploading && (
+              <div className="profilepage-avatar-loader">
+                <Loader />
+              </div>
+            )}
+          </div>
+          <h2 className="profilepage-username">@{profile.username}</h2>
+          <p className="profilepage-email">{profile.email}</p>
           {user?._id === profile._id && (
-            <button className="mt-2 px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-              Edit Profile
-            </button>
+            <button className="profilepage-edit-btn">Edit Profile</button>
           )}
         </div>
-
         <div>
-          <h3 className="text-lg font-semibold mb-3">
+          <h3 className="profilepage-section-title">
             Posts by @{profile.username}
           </h3>
           {loadingPosts ? (
@@ -90,7 +148,7 @@ const ProfilePage = () => {
               />
             ))
           ) : (
-            <p className="text-gray-500">No posts yet.</p>
+            <p className="profilepage-noposts">No posts yet.</p>
           )}
         </div>
       </div>

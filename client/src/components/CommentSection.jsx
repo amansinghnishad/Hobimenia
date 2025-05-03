@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useAuth } from "../contexts/AuthContext";
+import "../css/componentCSS/CommentSection.css";
 
 const CommentSection = ({ postId }) => {
   const { token, user } = useAuth();
@@ -49,39 +50,34 @@ const CommentSection = ({ postId }) => {
   };
 
   return (
-    <div className="mt-6">
-      <form onSubmit={handleCommentSubmit} className="flex gap-2 mb-4">
+    <div className="comment-section-container">
+      <form onSubmit={handleCommentSubmit} className="comment-section-form">
         <input
           type="text"
           placeholder="Write a comment..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          className="flex-1 border rounded px-3 py-2"
+          className="comment-section-input"
         />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
+        <button type="submit" className="comment-section-submit-btn">
           Post
         </button>
       </form>
-
-      <ul className="space-y-2">
+      <ul className="comment-section-list">
         {comments.map((comment) => (
-          <li
-            key={comment._id}
-            className="bg-gray-100 rounded px-3 py-2 flex items-center justify-between"
-          >
-            <span>
-              <strong className="text-blue-700">
+          <li key={comment._id} className="comment-section-list-item">
+            <span className="comment-section-list-item-content">
+              <span className="comment-section-list-item-username">
                 {comment.author.username}
-              </strong>
-              : {comment.text}
+              </span>
+              <span className="comment-section-list-item-text">
+                : {comment.text}
+              </span>
             </span>
             {comment.author._id === user._id && (
               <button
                 onClick={() => handleDelete(comment._id)}
-                className="ml-2 text-red-500 hover:underline text-sm"
+                className="comment-section-delete-btn"
                 title="Delete"
               >
                 🗑️

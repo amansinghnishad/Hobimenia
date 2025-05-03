@@ -4,6 +4,9 @@ import api from "../api/axios";
 import { AuthContext } from "../contexts/AuthContext";
 import AIHelperButton from "../components/AIHelperButton";
 import { toast } from "react-toastify";
+import Navbar from "../components/Navbar";
+import ReactMarkdown from "react-markdown";
+import "../css/pagesCSS/EditPostPage.css";
 
 const EditPostPage = () => {
   const { id } = useParams(); // Post ID
@@ -13,6 +16,7 @@ const EditPostPage = () => {
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
   const [currentImage, setCurrentImage] = useState("");
+  const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Fetch current post data
@@ -32,10 +36,20 @@ const EditPostPage = () => {
   }, [id, token]);
 
   const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPreviewImage(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage("");
+    }
   };
 
-  const handleUpdate = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -51,7 +65,7 @@ const EditPostPage = () => {
         },
       });
       toast.success("Post updated!");
-      setTimeout(() => navigate(`/posts/${id}`), 1500);
+      setTimeout(() => navigate("/home"), 1500); // Redirect to home after update
     } catch (err) {
       console.error("Failed to update post", err);
     } finally {
@@ -60,47 +74,54 @@ const EditPostPage = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
-      <h2 className="text-xl font-bold mb-4">Edit Post</h2>
-
-      <form onSubmit={handleUpdate} className="space-y-4">
-        <textarea
-          placeholder="Update your caption..."
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-          rows={4}
-          className="w-full border rounded p-2"
-        />
-
-        {currentImage && !image && (
-          <img
-            src={currentImage}
-            alt="Current Post"
-            className="w-full rounded mb-2 max-h-96 object-cover"
-          />
-        )}
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="block"
-        />
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          {loading ? "Updating..." : "Update Post"}
-        </button>
-      </form>
-
-      <div className="ai-helper-wrapper mt-6">
-        <h4 className="font-semibold mb-2">Need a better caption?</h4>
-        <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
+    <>
+      <Navbar />
+      <div className="edit-postpage-outer">
+        <div className="edit-postpage-card">
+          <h2 className="edit-postpage-title">Edit Post</h2>
+          <form onSubmit={handleSubmit} className="edit-postpage-form">
+            <div className="edit-postpage-form-group">
+              <textarea
+                placeholder="Edit your caption..."
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                rows={4}
+                className="edit-postpage-textarea"
+              />
+              <div className="edit-postpage-markdown-preview">
+                <ReactMarkdown>{caption}</ReactMarkdown>
+              </div>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="edit-postpage-file-input"
+            />
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="edit-postpage-img-preview"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  maxHeight: "384px",
+                  objectFit: "contain",
+                }}
+              />
+            )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="edit-postpage-submit-btn"
+            >
+              {loading ? "Updating..." : "Update Post"}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { login } from "../services/authService";
 import { useAuth } from "../contexts/AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import "../css/pagesCSS/LoginPage.css";
 
 const schema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -23,6 +25,7 @@ const LoginPage = () => {
   });
 
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
@@ -43,41 +46,45 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold text-center text-indigo-600 mb-6">
-          Login
-        </h2>
-
-        {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
-
-        <div>
-          <label className="block text-sm font-medium">Email</label>
+    <div className="loginpage-outer">
+      <form onSubmit={handleSubmit(onSubmit)} className="loginpage-form">
+        <h2 className="loginpage-title">Login</h2>
+        {error && <p className="loginpage-error">{error}</p>}
+        <div className="mb-5">
+          <label className="loginpage-label">Email</label>
           <input
             type="email"
             {...register("email")}
-            className="w-full mt-1 p-2 border rounded"
+            className="loginpage-input"
+            autoComplete="email"
           />
-          <p className="text-red-500 text-sm">{errors.email?.message}</p>
+          <p className="loginpage-input-error">{errors.email?.message}</p>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium">Password</label>
-          <input
-            type="password"
-            {...register("password")}
-            className="w-full mt-1 p-2 border rounded"
-          />
-          <p className="text-red-500 text-sm">{errors.password?.message}</p>
+        <div className="mb-6">
+          <label className="loginpage-label">Password</label>
+          <div className="loginpage-password-wrapper">
+            <input
+              type={showPassword ? "text" : "password"}
+              {...register("password")}
+              className="loginpage-input"
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              tabIndex={-1}
+              className="loginpage-password-toggle"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
+          <p className="loginpage-input-error">{errors.password?.message}</p>
         </div>
-
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded mt-4"
+          className="loginpage-submit-btn"
         >
           {isSubmitting ? "Logging in..." : "Log In"}
         </button>
