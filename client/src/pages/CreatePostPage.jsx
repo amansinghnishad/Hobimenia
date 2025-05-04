@@ -47,7 +47,6 @@ const CreatePostPage = () => {
 
   return (
     <>
-      <Navbar />
       <div className="create-postpage-outer">
         <div className="create-postpage-card">
           <h2 className="create-postpage-title">Create New Post</h2>

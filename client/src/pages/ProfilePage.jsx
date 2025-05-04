@@ -89,12 +89,24 @@ const ProfilePage = () => {
     }
   }, [id]);
 
-  if (loadingProfile) return <p>Loading profile...</p>;
-  if (!profile) return <p>User not found.</p>;
+  if (loadingProfile) {
+    return (
+      <div className="page-loader-container">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="profilepage-outer">
+        <p className="text-center text-red-500 mt-10">User not found.</p>
+      </div>
+    );
+  }
 
   return (
     <>
-      <Navbar />
       <div className="profilepage-outer">
         <div className="profilepage-card">
           <input
@@ -138,7 +150,7 @@ const ProfilePage = () => {
             Posts by @{profile.username}
           </h3>
           {loadingPosts ? (
-            <p>Loading posts...</p>
+            <Loader />
           ) : posts.length > 0 ? (
             posts.map((post) => (
               <PostCard

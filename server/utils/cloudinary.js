@@ -1,10 +1,7 @@
-// server/utils/cloudinary.js
 import { v2 as cloudinary } from "cloudinary";
 
-// Keep the export of the cloudinary object
 export default cloudinary;
 
-// Export an initialization function
 export const initializeCloudinary = () => {
   console.log("--- Initializing Cloudinary ---");
   console.log("Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME ? "Loaded" : "MISSING");
@@ -17,7 +14,6 @@ export const initializeCloudinary = () => {
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
 
-  // Optional: Check if config is set after calling .config()
   if (cloudinary.config().cloud_name) {
     console.log("✅ Cloudinary configured successfully.");
   } else {

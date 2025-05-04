@@ -75,7 +75,6 @@ const EditPostPage = () => {
 
   return (
     <>
-      <Navbar />
       <div className="edit-postpage-outer">
         <div className="edit-postpage-card">
           <h2 className="edit-postpage-title">Edit Post</h2>

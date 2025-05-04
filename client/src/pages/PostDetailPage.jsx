@@ -47,7 +47,6 @@ const PostDetailPage = () => {
 
   return (
     <>
-      <Navbar />
       <div className="postdetail-outer">
         <div className="postdetail-card">
           <div className="postdetail-header">

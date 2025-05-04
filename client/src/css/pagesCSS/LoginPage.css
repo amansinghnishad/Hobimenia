@@ -1,4 +1,3 @@
-/* LoginPage Normal CSS */
 .loginpage-outer {
   min-height: 100vh;
   display: flex;
@@ -52,6 +51,7 @@
   box-shadow: 0 1px 4px rgba(99, 102, 241, 0.05);
   font-size: 1rem;
   background: #fff;
+  padding-left: 35px !important;
 }
 .loginpage-input:focus {
   border-color: #60a5fa;
@@ -64,7 +64,7 @@
 }
 .loginpage-password-toggle {
   position: absolute;
-  right: 0.75rem;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   color: #94a3b8;
@@ -80,6 +80,8 @@
 }
 .loginpage-password-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 .loginpage-submit-btn {
   width: 100%;
@@ -97,6 +99,21 @@
 }
 .loginpage-submit-btn:hover {
   background: linear-gradient(90deg, #4f46e5 0%, #a78bfa 100%);
+}
+.loginpage-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.loginpage-input-icon {
+  position: absolute;
+  left: 10px;
+  color: #888;
+  pointer-events: none;
+}
+.loginpage-input::placeholder {
+  color: #aaa;
+  opacity: 1;
 }
 @keyframes fadeIn {
   from {

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { login } from "../services/authService";
 import { useAuth } from "../contexts/AuthContext";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaEnvelope, FaLock } from "react-icons/fa";
 import "../css/pagesCSS/LoginPage.css";
 
 const schema = yup.object({
@@ -52,22 +52,28 @@ const LoginPage = () => {
         {error && <p className="loginpage-error">{error}</p>}
         <div className="mb-5">
           <label className="loginpage-label">Email</label>
-          <input
-            type="email"
-            {...register("email")}
-            className="loginpage-input"
-            autoComplete="email"
-          />
+          <div className="loginpage-input-wrapper">
+            <FaEnvelope className="loginpage-input-icon" />
+            <input
+              type="email"
+              {...register("email")}
+              className="loginpage-input"
+              autoComplete="email"
+              placeholder="Enter your email"
+            />
+          </div>
           <p className="loginpage-input-error">{errors.email?.message}</p>
         </div>
         <div className="mb-6">
           <label className="loginpage-label">Password</label>
           <div className="loginpage-password-wrapper">
+            <FaLock className="loginpage-input-icon" />
             <input
               type={showPassword ? "text" : "password"}
               {...register("password")}
               className="loginpage-input"
               autoComplete="current-password"
+              placeholder="Enter your password"
             />
             <button
               type="button"
