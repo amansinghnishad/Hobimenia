@@ -40,3 +40,17 @@
     transform: translateY(0);
   }
 }
+
+@media (max-width: 768px) {
+  .homepage-outer {
+    padding-top: 6rem; /* Adjust padding for smaller screens */
+  }
+
+  .homepage-inner {
+    padding: 1rem 0.5rem; /* Adjust padding for smaller screens */
+  }
+
+  .homepage-title {
+    font-size: 1.5rem; /* Adjust font size for smaller screens */
+  }
+}

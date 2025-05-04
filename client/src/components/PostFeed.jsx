@@ -7,10 +7,11 @@ import "../css/componentCSS/PostFeed.css";
 const PostFeed = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingPostId, setDeletingPostId] = useState(null);
 
   const fetchPosts = async () => {
     try {
-      const res = await api.get("/posts"); // Backend should return all visible posts
+      const res = await api.get("/posts");
       setPosts(res.data);
     } catch (err) {
       console.error("Error fetching posts", err);
@@ -24,9 +25,14 @@ const PostFeed = () => {
   }, []);
 
   const handlePostDeleted = (deletedPostId) => {
-    setPosts((prevPosts) =>
-      prevPosts.filter((post) => post._id !== deletedPostId)
-    );
+    setDeletingPostId(deletedPostId);
+    // Wait for animation to finish before removing
+    setTimeout(() => {
+      setPosts((prevPosts) =>
+        prevPosts.filter((post) => post._id !== deletedPostId)
+      );
+      setDeletingPostId(null);
+    }, 700); // Match animation duration
   };
 
   return (
@@ -39,7 +45,12 @@ const PostFeed = () => {
         </div>
       ) : (
         posts.map((post) => (
-          <PostCard key={post._id} post={post} onDeleted={handlePostDeleted} />
+          <PostCard
+            key={post._id}
+            post={post}
+            onDeleted={handlePostDeleted}
+            isDeleting={deletingPostId === post._id}
+          />
         ))
       )}
     </div>

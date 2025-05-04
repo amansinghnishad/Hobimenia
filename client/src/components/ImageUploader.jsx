@@ -4,24 +4,10 @@ import "../css/componentCSS/ImageUploader.css";
 
 const ImageUploader = ({ onUpload }) => {
   const onDrop = useCallback(
-    async (acceptedFiles) => {
+    (acceptedFiles) => {
       const file = acceptedFiles[0];
-      const formData = new FormData();
-      formData.append("image", file);
-
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/upload`, {
-          method: "POST",
-          credentials: "include",
-          body: formData,
-        });
-
-        const data = await res.json();
-        if (data.imageUrl) {
-          onUpload(data.imageUrl);
-        }
-      } catch (err) {
-        console.error("Upload failed", err);
+      if (file) {
+        onUpload(file);
       }
     },
     [onUpload]
@@ -60,7 +46,6 @@ const ImageUploader = ({ onUpload }) => {
             style={{
               color: "#3b82f6",
               fontWeight: 600,
-              animation: "pulse 1s infinite",
             }}
           >
             Drop the image here...

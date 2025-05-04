@@ -86,6 +86,12 @@
 .create-postpage-ai-helper {
   margin-top: 2rem;
 }
+.create-postpage-ai-notice {
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 0.75rem;
+}
 @keyframes fadeInUp {
   from {
     opacity: 0;

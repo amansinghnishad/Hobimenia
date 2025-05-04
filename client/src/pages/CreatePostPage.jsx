@@ -1,11 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { AuthContext } from "../contexts/AuthContext";
-import AIHelperButton from "../components/AIHelperButton";
+import AIHelperButton from "../components/AIHelperButton"; // Uncommented
+import ImageUploader from "../components/ImageUploader";
 import { toast } from "react-toastify";
-import Navbar from "../components/Navbar";
-import ReactMarkdown from "react-markdown";
+// import Navbar from "../components/Navbar"; // Assuming rendered higher up
+// import ReactMarkdown from "react-markdown"; // Temporarily commented out if not essential
 import "../css/pagesCSS/CreatePostPage.css";
 
 const CreatePostPage = () => {
@@ -13,19 +14,36 @@ const CreatePostPage = () => {
   const navigate = useNavigate();
 
   const [caption, setCaption] = useState("");
-  const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
+  // Handle image selection from ImageUploader
+  const handleImageUpload = (file) => {
+    setImageFile(file);
+    setImageUrl(URL.createObjectURL(file));
   };
+
+  // Clean up the object URL
+  useEffect(() => {
+    return () => {
+      if (imageUrl) {
+        URL.revokeObjectURL(imageUrl);
+      }
+    };
+  }, [imageUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!caption.trim()) {
+      toast.error("Caption cannot be empty.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("caption", caption);
-    if (image) formData.append("image", image);
+    if (imageFile) formData.append("image", imageFile);
 
     try {
       setLoading(true);
@@ -51,38 +69,56 @@ const CreatePostPage = () => {
         <div className="create-postpage-card">
           <h2 className="create-postpage-title">Create New Post</h2>
           <form onSubmit={handleSubmit} className="create-postpage-form">
+            {/* Image Uploader Section */}
             <div className="create-postpage-form-group">
+              <label className="create-postpage-label">
+                Add an Image (Optional)
+              </label>
+              <ImageUploader onUpload={handleImageUpload} />
+              {imageUrl && (
+                <div className="create-postpage-image-preview">
+                  <img src={imageUrl} alt="Selected preview" />
+                </div>
+              )}
+            </div>
+
+            {/* Caption Section */}
+            <div className="create-postpage-form-group">
+              <label htmlFor="caption" className="create-postpage-label">
+                Write Blog / Thought
+              </label>
               <textarea
-                placeholder="Write your caption or thought using Markdown..."
+                id="caption"
+                placeholder="Share your thoughts, ideas, or stories..."
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                rows={4}
+                rows={6}
                 className="create-postpage-textarea"
+                required
               />
-              <div className="create-postpage-markdown-preview">
-                <ReactMarkdown>{caption}</ReactMarkdown>
-              </div>
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="create-postpage-file-input"
-            />
+
+            {/* AI Helper Button - Pass current caption */}
+            <div className="create-postpage-ai-helper">
+              <AIHelperButton
+                currentCaption={caption} // Pass caption state
+                onSuggestionClick={(text) => setCaption(caption + text)}
+              />
+              {/* Add AI features notice */}
+              <p className="create-postpage-ai-notice">
+                ✨ More AI features coming soon!
+              </p>
+            </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !caption.trim()}
               className="create-postpage-submit-btn"
             >
-              {loading ? "Posting..." : "Post"}
+              {loading ? "Publishing..." : "Publish Post"}
             </button>
           </form>
-          <div className="create-postpage-ai-helper">
-            <h4 className="font-semibold mb-2 text-gray-700">
-              Need help writing?
-            </h4>
-            <AIHelperButton onSuggestionClick={(text) => setCaption(text)} />
-          </div>
         </div>
       </div>
     </>

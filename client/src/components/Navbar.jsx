@@ -54,7 +54,7 @@ const Navbar = () => {
       </Link>
 
       <button
-        className="navbar-mobile-toggle"
+        className="navbar-mobile-toggle" // Added class
         onClick={toggleMobileMenu}
         aria-label="Toggle menu"
       >
