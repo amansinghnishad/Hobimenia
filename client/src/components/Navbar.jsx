@@ -61,6 +61,7 @@ const Navbar = () => {
         <Link to={user ? "/home" : "/"} className="navbar-link-item">
           <FaHome className="navbar-link-icon" /> Home
         </Link>
+
         {user ? (
           <>
             <Link to={`/profile/${user._id}`} className="navbar-link-item">
@@ -72,10 +73,10 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <Link to="/about" className="navbar-link-item">
+            <Link to="/#about-us-section" className="navbar-link-item">
               <FaInfoCircle className="navbar-link-icon" /> About
             </Link>
-            <Link to="/contact" className="navbar-link-item">
+            <Link to="/#contact-us-section" className="navbar-link-item">
               <FaEnvelope className="navbar-link-icon" /> Contact
             </Link>
             <Link to="/login" className="navbar-btn-login">
@@ -113,14 +114,14 @@ const Navbar = () => {
           ) : (
             <>
               <Link
-                to="/about"
+                to="/#about-us-section"
                 className="navbar-link-item"
                 onClick={closeMobileMenu}
               >
                 <FaInfoCircle className="navbar-link-icon" /> About
               </Link>
               <Link
-                to="/contact"
+                to="/#contact-us-section"
                 className="navbar-link-item"
                 onClick={closeMobileMenu}
               >

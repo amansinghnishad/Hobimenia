@@ -1,0 +1,129 @@
+/* AboutUs section styles moved from HeroPage.css */
+.about-section {
+  width: 95vw;
+  max-width: 100vw;
+  margin: 0 auto;
+  border-radius: 50px;
+  box-shadow: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  background: transparent;
+  padding: 0;
+  border-top: none;
+  position: relative;
+  overflow: hidden;
+}
+.about-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 1;
+}
+.about-content h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
+}
+.about-content p {
+  color: #f0f0f0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  max-width: 700px;
+  line-height: 1.7;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+.about-media {
+  flex: none;
+  width: 105%;
+  height: 105%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  line-height: 0;
+  border-radius: 1rem;
+  background: none;
+}
+.about-video {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  border: none;
+  background: none;
+  margin: 0 auto;
+  display: block;
+  object-fit: fill;
+}
+
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeInSection 0.9s cubic-bezier(0.4, 0.2, 0.2, 1) forwards;
+}
+
+.about-title-animated,
+.about-text-animated {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.about-text-animated {
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeInSection {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .about-section {
+    min-height: 50vh;
+  }
+  .about-content {
+    align-items: center;
+    max-width: 100%;
+    padding: 3rem 5%;
+  }
+  .about-content h2 {
+    font-size: 1.8rem;
+  }
+  .about-content p {
+    font-size: 1rem;
+  }
+  .about-media {
+    max-width: 100%;
+  }
+  .about-video {
+    width: 100vw;
+    height: 100vw;
+    max-width: 100vw;
+    max-height: 100vw;
+    object-fit: cover;
+  }
+}
