@@ -45,11 +45,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <Link
-        to={user ? "/home" : "/"}
-        className="navbar-brand"
-        onClick={closeMobileMenu}
-      >
+      <Link to="/" className="navbar-brand" onClick={closeMobileMenu}>
         <span className="navbar-brand-logo">H</span> Hobimenia
       </Link>
 
@@ -62,7 +58,7 @@ const Navbar = () => {
       </button>
 
       <div className="navbar-links-desktop">
-        <Link to="/home" className="navbar-link-item">
+        <Link to={user ? "/home" : "/"} className="navbar-link-item">
           <FaHome className="navbar-link-icon" /> Home
         </Link>
         {user ? (

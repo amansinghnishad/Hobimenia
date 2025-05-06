@@ -47,7 +47,7 @@
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
   outline: none;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
   box-shadow: 0 1px 4px rgba(99, 102, 241, 0.05);
   font-size: 1rem;
   background: #fff;
@@ -56,6 +56,7 @@
 .loginpage-input:focus {
   border-color: #60a5fa;
   box-shadow: 0 0 0 2px #60a5fa33;
+  transform: scale(1.02);
 }
 .loginpage-input-error {
   color: #dc2626;
@@ -95,10 +96,15 @@
   border: none;
   cursor: pointer;
   margin-top: 0.5rem;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
 }
 .loginpage-submit-btn:hover {
   background: linear-gradient(90deg, #4f46e5 0%, #a78bfa 100%);
+  transform: scale(1.03);
+}
+.loginpage-submit-btn:disabled {
+  cursor: not-allowed;
+  animation: processingPulse 1.5s infinite ease-in-out;
 }
 .loginpage-input-wrapper {
   position: relative;
@@ -139,5 +145,16 @@
   }
   to {
     opacity: 0.7;
+  }
+}
+@keyframes processingPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.01);
   }
 }

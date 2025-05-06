@@ -5,7 +5,10 @@ import "../css/pagesCSS/HeroPage.css";
 const HeroPage = () => {
   return (
     <div className="landing-root">
-      {/* Hero Section */}
+      <div className="dev-banner">
+        🚧 Some features are currently under development! Stay tuned. 🚧
+      </div>
+
       <section className="hero-section fade-in-section">
         <div className="hero-content">
           <h1 className="hero-title">Welcome to Hobimenia</h1>
@@ -23,6 +26,25 @@ const HeroPage = () => {
               Log In
             </Link>
           </div>
+
+          <div className="hero-benefits">
+            <div className="benefit-item">
+              <span className="benefit-icon">🔗</span>
+              <span className="benefit-text">Connect with Peers</span>
+            </div>
+            <div className="benefit-item">
+              <span className="benefit-icon">💡</span>
+              <span className="benefit-text">Share Your Creations</span>
+            </div>
+            <div className="benefit-item">
+              <span className="benefit-icon">📚</span>
+              <span className="benefit-text">Learn New Skills</span>
+            </div>
+            <div className="benefit-item">
+              <span className="benefit-icon">🤝</span>
+              <span className="benefit-text">Collaborate on Projects</span>
+            </div>
+          </div>
         </div>
         <div className="hero-media">
           <video
@@ -37,64 +59,127 @@ const HeroPage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="features-section fade-in-section">
-        <h2 className="features-title">Features</h2>
-        <div className="features-list">
-          <div className="feature-card">
-            <img
-              src="/assets/feature1.png"
-              alt="Feature 1"
-              className="feature-img"
-            />
-            <h3>Share Your Passion</h3>
-            <p>
+      <div
+        className="features-header fade-in-section"
+        style={{ textAlign: "center", marginBottom: "3rem" }}
+      >
+        <h2
+          style={{
+            fontSize: "2.5rem",
+            fontWeight: "700",
+            color: "#312e81",
+            marginBottom: "0.75rem",
+          }}
+        >
+          Explore Hobimenia's Core Features
+        </h2>
+        <p
+          style={{
+            fontSize: "1.2rem",
+            color: "#4b5563",
+            maxWidth: "600px",
+            margin: "0 auto",
+            lineHeight: "1.6",
+          }}
+        >
+          Discover how our platform helps you connect, share, and grow your
+          hobbies.
+        </p>
+      </div>
+
+      <section
+        className="features-section-alt fade-in-section"
+        aria-label="Platform Features"
+      >
+        <div className="feature-item">
+          <div className="feature-content">
+            <h2 className="feature-title-alt">Share Your Passion</h2>
+            <p className="feature-description-alt">
               Post about your hobbies, projects, and connect with like-minded
-              people.
+              people. Showcase your journey and inspire others.
             </p>
           </div>
-          <div className="feature-card">
-            <img
-              src="/assets/feature2.png"
-              alt="Feature 2"
-              className="feature-img"
+          <div className="feature-media">
+            <video
+              src="/assets/sharePassion.mp4"
+              alt="Share Your Passion Feature Video"
+              className="feature-video-alt"
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster="/assets/sharePassion.svg"
             />
-            <h3>Discover New Interests</h3>
-            <p>
-              Explore trending hobbies and find inspiration from the community.
+          </div>
+        </div>
+
+        <div className="feature-item feature-item-reversed">
+          <div className="feature-content">
+            <h2 className="feature-title-alt">Discover New Interests</h2>
+            <p className="feature-description-alt">
+              Explore trending hobbies and find inspiration from a diverse
+              community. Dive into new activities and broaden your horizons.
             </p>
           </div>
-          <div className="feature-card">
-            <img
-              src="/assets/feature3.png"
-              alt="Feature 3"
-              className="feature-img"
+          <div className="feature-media">
+            <video
+              src="/assets/discoverInterest.mp4"
+              alt="Discover New Interests Feature Video"
+              className="feature-video-alt"
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster="/assets/InterestsFeature.svg"
             />
-            <h3>Collaborate & Learn</h3>
-            <p>Join groups, comment, and learn together with others.</p>
+          </div>
+        </div>
+
+        <div className="feature-item">
+          <div className="feature-content">
+            <h2 className="feature-title-alt">Collaborate & Learn</h2>
+            <p className="feature-description-alt">
+              Join groups, participate in discussions, comment on posts, and
+              learn together with fellow enthusiasts.
+            </p>
+          </div>
+          <div className="feature-media">
+            <video
+              src="/assets/collaborationFeature.mp4"
+              alt="Collaborate & Learn Feature Video"
+              className="feature-video-alt"
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster="/assets/collaboratefeature.svg"
+            />
           </div>
         </div>
       </section>
 
-      {/* About Section */}
       <section className="about-section fade-in-section">
+        <div className="about-media">
+          <video
+            className="about-video"
+            src="/assets/AboutMe.mp4"
+            loop
+            muted
+            playsInline
+            autoPlay
+            poster="/assets/about-poster.png"
+          >
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
         <div className="about-content">
-          <h2>About Hobimenia</h2>
-          <p>
+          <h2 className="about-title-animated">About Hobimenia</h2>
+          <p className="about-text-animated">
             Hobimenia is built for hobbyists, makers, and lifelong learners. Our
             mission is to foster a welcoming space for everyone to share, learn,
             and grow together.
           </p>
-        </div>
-        <div className="about-media">
-          <video
-            className="about-video"
-            controls
-            poster="/assets/about-poster.png"
-          >
-            <source src="/assets/hero-video.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
         </div>
       </section>
     </div>
