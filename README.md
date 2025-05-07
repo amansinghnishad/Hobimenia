@@ -76,7 +76,7 @@ Hobimenia is a full-stack web application designed to help users discover, share
 
 ## Deployment
 - Frontend: Vercel
-- Backend: Can be deployed to any Node.js-compatible host
+- Backend: Render
 
 ## License
 MIT
