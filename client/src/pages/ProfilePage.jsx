@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axios";
-import PostCard from "../components/PostCard";
 import { useAuth } from "../contexts/AuthContext";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
-import { FaCamera, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import "../css/pagesCSS/ProfilePage.css";
+
+import ProfileCoverPhoto from "../components/profile/ProfileCoverPhoto";
+import ProfileHeader from "../components/profile/ProfileHeader";
+import ProfileStats from "../components/profile/ProfileStats";
+import ProfileBioInterests from "../components/profile/ProfileBioInterests";
+import ProfilePostsGrid from "../components/profile/ProfilePostsGrid";
 
 const ProfilePage = () => {
   const { id } = useParams();
@@ -23,8 +27,6 @@ const ProfilePage = () => {
   const [isUploadingCoverPhoto, setIsUploadingCoverPhoto] = useState(false);
   const coverPhotoInputRef = useRef(null);
 
-  const [bio, setBio] = useState("");
-  const [interests, setInterests] = useState([]);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [tempBio, setTempBio] = useState("");
   const [tempInterests, setTempInterests] = useState("");
@@ -38,8 +40,6 @@ const ProfilePage = () => {
       const res = await api.get(`/users/${id}`);
       const profileData = res.data;
       setProfile(profileData);
-      setBio(profileData.bio || "");
-      setInterests(profileData.interests || []);
 
       if (
         user &&
@@ -76,6 +76,13 @@ const ProfilePage = () => {
     setPosts((prevPosts) =>
       prevPosts.filter((post) => post._id !== deletedPostId)
     );
+    // Optionally, update profile.postsCount if it's being strictly managed
+    if (profile && profile.postsCount !== undefined) {
+      setProfile((prev) => ({
+        ...prev,
+        postsCount: Math.max(0, prev.postsCount - 1),
+      }));
+    }
   };
 
   const handleProfilePicClick = () => {
@@ -171,9 +178,8 @@ const ProfilePage = () => {
       const res = await api.put("/users/profile", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setProfile((prev) => ({ ...prev, ...res.data }));
-      setBio(res.data.bio);
-      setInterests(res.data.interests);
+      // The response from PUT /users/profile should be the complete updated user object
+      setProfile(res.data);
 
       if (user._id === res.data._id) {
         loginContext(
@@ -201,37 +207,28 @@ const ProfilePage = () => {
     setFollowLoading(true);
     const action = isFollowing ? "unfollow" : "follow";
     try {
-      if (isFollowing) {
-        await api.delete(`/users/${profile._id}/unfollow`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setProfile((prev) => ({
-          ...prev,
-          followersCount: Math.max(0, (prev.followersCount || 0) - 1),
-          followers: prev.followers
-            ? prev.followers.filter((fId) => fId !== user._id)
-            : [],
-        }));
-        setIsFollowing(false);
-        toast.success(`Unfollowed @${profile.username}`);
-      } else {
-        await api.post(
-          `/users/${profile._id}/follow`,
-          {},
-          {
+      // The backend should return the updated target user's profile data
+      const res = isFollowing
+        ? await api.delete(`/users/${profile._id}/unfollow`, {
             headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setProfile((prev) => ({
-          ...prev,
-          followersCount: (prev.followersCount || 0) + 1,
-          followers: prev.followers
-            ? [...prev.followers, user._id]
-            : [user._id],
-        }));
-        setIsFollowing(true);
-        toast.success(`Followed @${profile.username}`);
-      }
+          })
+        : await api.post(
+            `/users/${profile._id}/follow`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+      // Update profile state with the data returned from the backend
+      setProfile(res.data.targetUser);
+      setIsFollowing(!isFollowing);
+
+      toast.success(
+        `${isFollowing ? "Unfollowed" : "Followed"} @${
+          res.data.targetUser.username
+        }`
+      );
     } catch (err) {
       toast.error(
         err.response?.data?.message ||
@@ -268,229 +265,52 @@ const ProfilePage = () => {
   return (
     <>
       <div className="profilepage-outer">
-        <div className="profilepage-cover-photo-container">
-          <img
-            src={profile.coverPhoto || "/assets/default-cover.jpg"}
-            alt="Cover"
-            className="profilepage-cover-photo"
-          />
-          {user?._id === profile._id && (
-            <button
-              className="profilepage-cover-edit-btn"
-              onClick={handleCoverPhotoClick}
-              disabled={isUploadingCoverPhoto}
-              title="Change cover photo"
-            >
-              {isUploadingCoverPhoto ? <Loader size="small" /> : <FaCamera />}
-              <span className="profilepage-cover-edit-btn-text">
-                Change Cover
-              </span>
-            </button>
-          )}
-          <input
-            type="file"
-            ref={coverPhotoInputRef}
-            onChange={handleCoverPhotoChange}
-            accept="image/*"
-            style={{ display: "none" }}
-            disabled={isUploadingCoverPhoto}
-          />
-        </div>
+        <ProfileCoverPhoto
+          profile={profile}
+          currentUser={user}
+          isUploadingCoverPhoto={isUploadingCoverPhoto}
+          onCoverPhotoClick={handleCoverPhotoClick}
+          coverPhotoInputRef={coverPhotoInputRef}
+          onCoverPhotoChange={handleCoverPhotoChange}
+        />
 
         <div className="profilepage-main-content">
-          <div className="profilepage-header-section">
-            <div
-              className={`profilepage-avatar-wrapper${
-                user?._id === profile._id ? " editable" : ""
-              }`}
-              onClick={handleProfilePicClick}
-              title={user?._id === profile._id ? "Change profile picture" : ""}
-            >
-              <img
-                src={profile.profilePic || "/assets/default-avatar.png"}
-                alt={`${profile.username}'s avatar`}
-                className={`profilepage-avatar${
-                  isUploadingProfilePic ? " uploading" : ""
-                }`}
-              />
-              {user?._id === profile._id && !isUploadingProfilePic && (
-                <div className="profilepage-avatar-overlay">
-                  <FaCamera className="profilepage-avatar-editicon" />
-                </div>
-              )}
-              {isUploadingProfilePic && (
-                <div className="profilepage-avatar-loader">
-                  <Loader size="medium" />
-                </div>
-              )}
-            </div>
-            <input
-              type="file"
-              ref={profilePicInputRef}
-              onChange={handleProfilePicChange}
-              accept="image/*"
-              style={{ display: "none" }}
-              disabled={isUploadingProfilePic || user?._id !== profile._id}
-            />
+          <ProfileHeader
+            profile={profile}
+            currentUser={user}
+            isUploadingProfilePic={isUploadingProfilePic}
+            onProfilePicClick={handleProfilePicClick}
+            profilePicInputRef={profilePicInputRef}
+            onProfilePicChange={handleProfilePicChange}
+            isEditingProfile={isEditingProfile}
+            onEditProfile={handleEditProfile}
+            isFollowing={isFollowing}
+            onFollowToggle={handleFollowToggle}
+            followLoading={followLoading}
+          />
 
-            <div className="profilepage-user-details">
-              <h2 className="profilepage-username">@{profile.username}</h2>
-            </div>
+          <ProfileStats profile={profile} postsCountFromParent={posts.length} />
 
-            <div className="profilepage-actions">
-              {user?._id === profile._id ? (
-                !isEditingProfile && (
-                  <button
-                    onClick={handleEditProfile}
-                    className="profilepage-action-btn edit-profile-btn"
-                  >
-                    <FaEdit /> Edit Profile
-                  </button>
-                )
-              ) : (
-                <button
-                  onClick={handleFollowToggle}
-                  className={`profilepage-action-btn follow-btn ${
-                    isFollowing ? "following" : ""
-                  }`}
-                  disabled={followLoading || !user}
-                  title={
-                    !user
-                      ? "Login to follow"
-                      : isFollowing
-                      ? `Unfollow @${profile.username}`
-                      : `Follow @${profile.username}`
-                  }
-                >
-                  {followLoading ? (
-                    <Loader size="small" />
-                  ) : isFollowing ? (
-                    "Following"
-                  ) : (
-                    "Follow"
-                  )}
-                </button>
-              )}
-            </div>
-          </div>
-
-          <div className="profilepage-stats">
-            <div className="profilepage-stat-item">
-              <strong>
-                {profile.postsCount !== undefined
-                  ? profile.postsCount
-                  : posts.length}
-              </strong>{" "}
-              Posts
-            </div>
-            <div className="profilepage-stat-item">
-              <strong>{profile.followersCount || 0}</strong> Followers
-            </div>
-            <div className="profilepage-stat-item">
-              <strong>{profile.followingCount || 0}</strong> Following
-            </div>
-          </div>
-
-          {isEditingProfile && user?._id === profile?._id ? (
-            <div className="profilepage-edit-form">
-              <div className="profilepage-form-group">
-                <label htmlFor="bio">Bio (Max 250 characters)</label>
-                <textarea
-                  id="bio"
-                  value={tempBio}
-                  onChange={(e) => setTempBio(e.target.value)}
-                  placeholder="Tell us about yourself..."
-                  maxLength={250}
-                  rows={3}
-                />
-              </div>
-              <div className="profilepage-form-group">
-                <label htmlFor="interests">Interests (comma-separated)</label>
-                <input
-                  type="text"
-                  id="interests"
-                  value={tempInterests}
-                  onChange={(e) => setTempInterests(e.target.value)}
-                  placeholder="e.g., Photography, Gaming, Tech"
-                />
-              </div>
-              <div className="profilepage-edit-actions">
-                <button
-                  onClick={handleSaveProfile}
-                  className="profilepage-action-btn save-btn"
-                >
-                  <FaSave /> Save Changes
-                </button>
-                <button
-                  onClick={handleCancelEdit}
-                  className="profilepage-action-btn cancel-btn"
-                >
-                  <FaTimes /> Cancel
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="profilepage-bio-interests">
-              {profile.bio && <p className="profilepage-bio">{profile.bio}</p>}
-              {!profile.bio && user?._id !== profile?._id && (
-                <p className="profilepage-bio-empty">No bio yet.</p>
-              )}
-              {!profile.bio && user?._id === profile?._id && (
-                <p className="profilepage-bio-empty">
-                  No bio yet.{" "}
-                  <button onClick={handleEditProfile} className="link-style">
-                    Add bio
-                  </button>
-                </p>
-              )}
-
-              {profile.interests && profile.interests.length > 0 && (
-                <div className="profilepage-interests">
-                  <strong>Interests:</strong>
-                  <div className="profilepage-interests-tags">
-                    {profile.interests.map((interest, index) => (
-                      <span key={index} className="profilepage-interest-tag">
-                        {interest}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {(!profile.interests || profile.interests.length === 0) &&
-                user?._id === profile?._id && (
-                  <p className="profilepage-interests-empty">
-                    No interests listed.{" "}
-                    <button onClick={handleEditProfile} className="link-style">
-                      Add interests
-                    </button>
-                  </p>
-                )}
-            </div>
-          )}
+          <ProfileBioInterests
+            profile={profile}
+            currentUser={user}
+            isEditingProfile={isEditingProfile}
+            tempBio={tempBio}
+            setTempBio={setTempBio}
+            tempInterests={tempInterests}
+            setTempInterests={setTempInterests}
+            onSaveProfile={handleSaveProfile}
+            onCancelEdit={handleCancelEdit}
+            onEditProfile={handleEditProfile}
+          />
         </div>
 
-        <div className="profilepage-posts-section">
-          <h3 className="profilepage-section-title">Posts</h3>
-          {loadingPosts ? (
-            <div className="profilepage-loader-container">
-              <Loader />
-            </div>
-          ) : posts.length > 0 ? (
-            <div className="profilepage-posts-grid">
-              {posts.map((post) => (
-                <PostCard
-                  key={post._id}
-                  post={post}
-                  onDeleted={handlePostDeleted}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="profilepage-noposts">
-              @{profile.username} hasn't shared any posts yet.
-            </p>
-          )}
-        </div>
+        <ProfilePostsGrid
+          username={profile.username}
+          posts={posts}
+          loadingPosts={loadingPosts}
+          onPostDeleted={handlePostDeleted}
+        />
       </div>
     </>
   );

@@ -1,0 +1,41 @@
+/* Styles for ProfilePostsGrid component */
+.profilepage-posts-section {
+  margin-top: 2rem;
+}
+
+.profilepage-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #eee;
+}
+
+.profilepage-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.profilepage-noposts {
+  color: #6c757d;
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+/* Responsive adjustments for ProfilePostsGrid */
+@media (max-width: 768px) {
+  .profilepage-posts-grid {
+    grid-template-columns: 1fr; /* Single column for posts */
+  }
+}
+
+@media (max-width: 480px) {
+  .profilepage-section-title {
+    font-size: 1.3rem;
+  }
+}

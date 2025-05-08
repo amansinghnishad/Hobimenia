@@ -1,0 +1,121 @@
+/* Styles for ProfileBioInterests component */
+.profilepage-bio-interests {
+  margin-bottom: 2rem;
+  text-align: left;
+  width: 100%;
+}
+
+.profilepage-bio {
+  color: #454545;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  white-space: pre-wrap;
+}
+
+.profilepage-bio-empty,
+.profilepage-interests-empty {
+  color: #777;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.link-style {
+  /* This could be a global utility if used elsewhere */
+  background: none;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+}
+
+.profilepage-interests {
+  margin-top: 1rem;
+}
+
+.profilepage-interests strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.profilepage-interests-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.profilepage-interest-tag {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 0.3rem 0.7rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+}
+
+/* Edit Profile Form specific to ProfileBioInterests */
+.profilepage-edit-form {
+  width: 100%;
+  margin-bottom: 2rem;
+  border: 1px solid #eee;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: #fdfdfd;
+}
+
+.profilepage-form-group {
+  margin-bottom: 1rem;
+}
+
+.profilepage-form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.profilepage-form-group textarea,
+.profilepage-form-group input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.profilepage-form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.profilepage-edit-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* Save and Cancel button styles, assuming .profilepage-action-btn base is available or defined in ProfileHeader.css */
+/* If ProfileHeader.css is not globally imported, you might need to redefine .profilepage-action-btn base here or ensure it's imported. */
+/* For now, defining variants assuming base is somehow available. */
+.profilepage-action-btn.save-btn {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+.profilepage-action-btn.save-btn:hover {
+  background-color: #1e7e34;
+  border-color: #1e7e34;
+}
+
+.profilepage-action-btn.cancel-btn {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+.profilepage-action-btn.cancel-btn:hover {
+  background-color: #b02a37;
+  border-color: #b02a37;
+}

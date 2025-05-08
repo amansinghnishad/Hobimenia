@@ -1,0 +1,48 @@
+/* Styles for ProfileStats component */
+.profilepage-stats {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.profilepage-stat-item {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.profilepage-stat-item strong {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Responsive adjustments for ProfileStats */
+@media (max-width: 768px) {
+  .profilepage-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.75rem 0;
+  }
+  .profilepage-stat-item strong {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .profilepage-stats {
+    gap: 0.25rem;
+  }
+  .profilepage-stat-item strong {
+    font-size: 1rem;
+  }
+  .profilepage-stat-item {
+    font-size: 0.8rem;
+  }
+}

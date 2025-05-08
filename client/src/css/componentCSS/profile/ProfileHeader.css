@@ -1,0 +1,172 @@
+/* Styles for ProfileHeader component */
+.profilepage-header-section {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.profilepage-avatar-wrapper {
+  position: relative;
+  border-radius: 50%;
+  margin-right: 1.5rem;
+  width: 120px;
+  height: 120px;
+  border: 5px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background-color: #ccc;
+}
+
+.profilepage-avatar-wrapper.editable {
+  cursor: pointer;
+}
+
+.profilepage-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.profilepage-avatar.uploading {
+  opacity: 0.5;
+}
+
+.profilepage-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, opacity 0.2s;
+  pointer-events: none;
+}
+
+.profilepage-avatar-wrapper.editable:hover .profilepage-avatar-overlay {
+  background: rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+}
+
+.profilepage-avatar-editicon {
+  color: #fff;
+  font-size: 1.8rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.profilepage-avatar-wrapper.editable:hover .profilepage-avatar-editicon {
+  opacity: 1;
+}
+
+.profilepage-avatar-loader {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profilepage-user-details {
+  flex-grow: 1;
+  padding-bottom: 10px;
+}
+
+.profilepage-username {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  color: #333;
+}
+
+.profilepage-actions {
+  margin-left: auto;
+  padding-bottom: 10px;
+}
+
+.profilepage-action-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.profilepage-action-btn svg {
+  margin-right: 6px;
+}
+
+.profilepage-action-btn.edit-profile-btn:hover {
+  background-color: #e9ecef;
+  border-color: #bbb;
+}
+
+.profilepage-action-btn.follow-btn {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.profilepage-action-btn.follow-btn:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.profilepage-action-btn.follow-btn.following {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.profilepage-action-btn.follow-btn.following:hover {
+  background-color: #545b62;
+  border-color: #545b62;
+}
+
+/* Responsive adjustments for ProfileHeader */
+@media (max-width: 768px) {
+  .profilepage-header-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .profilepage-avatar-wrapper {
+    width: 100px;
+    height: 100px;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  .profilepage-user-details {
+    padding-bottom: 0.5rem;
+  }
+  .profilepage-actions {
+    margin-left: 0;
+    margin-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .profilepage-avatar-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+  .profilepage-username {
+    font-size: 1.5rem;
+  }
+  .profilepage-action-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+}

@@ -1,384 +1,21 @@
-/* ProfilePage Normal CSS */
+/* ProfilePage General Layout and Shared Styles */
 .profilepage-outer {
-  max-width: 60rem; /* Increased max-width for a wider layout */
+  max-width: 60rem;
   margin-left: auto;
   margin-right: auto;
-  padding-top: 1rem; /* Adjusted padding, assuming Navbar is ~4-5rem high */
+  padding-top: 1rem;
   padding-bottom: 2.5rem;
-  /* padding-left: 1rem; No horizontal padding on outer, handled by inner elements */
-  /* padding-right: 1rem; */
-  animation: fadeInUp 0.7s;
+  animation: fadeInUp 0.7s ease-out;
 }
 
-/* Cover Photo Section */
-.profilepage-cover-photo-container {
-  width: 100%;
-  height: 250px; /* Adjust as needed, or use aspect-ratio */
-  background-color: #e0e0e0; /* Placeholder color */
-  border-radius: 12px 12px 0 0; /* Rounded top corners */
-  position: relative;
-  overflow: hidden; /* Ensures image stays within bounds */
-  margin-bottom: -60px; /* Negative margin to allow avatar to overlap */
-}
-
-.profilepage-cover-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profilepage-cover-edit-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  font-size: 0.9rem;
-  transition: background-color 0.2s ease;
-  z-index: 10;
-}
-
-.profilepage-cover-edit-btn:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.profilepage-cover-edit-btn svg {
-  margin-right: 6px;
-}
-
-.profilepage-cover-edit-btn-text {
-  display: inline; /* Default, can be hidden on small screens if needed */
-}
-
-/* Main Content Area - below cover, contains avatar, info, posts */
+/* Main Content Area - below cover, acts as a container for profile components */
 .profilepage-main-content {
   background: #fff;
-  border-radius: 0 0 12px 12px; /* Rounded bottom corners if cover has top */
-  /* If no separate card for top section, then all corners rounded here */
-  /* border-radius: 12px; */
+  border-radius: 0 0 12px 12px; /* Assumes cover photo has top rounded corners */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
-  padding-top: 70px; /* Space for the overlapping avatar */
-  position: relative; /* For stacking context if needed */
-}
-
-/* Profile Header: Avatar, Username, Actions */
-.profilepage-header-section {
-  display: flex;
-  align-items: flex-end; /* Align items to bottom: avatar, then name/button */
-  position: relative; /* Needed for avatar positioning */
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
-}
-
-.profilepage-avatar-wrapper {
-  position: relative; /* Stays relative to its normal flow before adjustment */
-  border-radius: 50%;
-  margin-right: 1.5rem;
-  /* Avatar is large and overlaps */
-  width: 120px;
-  height: 120px;
-  border: 5px solid #fff; /* Border to lift it off the cover */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  /* margin-top: -60px; This was moved to .profilepage-cover-photo-container negative margin */
-  background-color: #ccc; /* Fallback if image is missing */
-}
-
-.profilepage-avatar-wrapper.editable {
-  cursor: pointer;
-}
-
-.profilepage-avatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block; /* Remove extra space below image */
-}
-
-.profilepage-avatar.uploading {
-  opacity: 0.5;
-}
-
-.profilepage-avatar-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, opacity 0.2s;
-  pointer-events: none;
-}
-
-.profilepage-avatar-wrapper.editable:hover .profilepage-avatar-overlay {
-  background: rgba(0, 0, 0, 0.4);
-  pointer-events: auto;
-}
-
-.profilepage-avatar-editicon {
-  color: #fff;
-  font-size: 1.8rem; /* Slightly smaller for the avatar */
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.profilepage-avatar-wrapper.editable:hover .profilepage-avatar-editicon {
-  opacity: 1;
-}
-
-.profilepage-avatar-loader {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.profilepage-user-details {
-  flex-grow: 1; /* Takes available space */
-  padding-bottom: 10px; /* Align with bottom of avatar roughly */
-}
-
-.profilepage-username {
-  font-size: 1.75rem; /* Slightly adjusted */
-  font-weight: 700;
-  margin-bottom: 0.2rem;
-  color: #333;
-}
-
-/* Actions: Edit Profile / Follow buttons */
-.profilepage-actions {
-  margin-left: auto; /* Pushes buttons to the right */
-  padding-bottom: 10px; /* Align with bottom of avatar roughly */
-}
-
-.profilepage-action-btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #f8f9fa;
-  color: #333;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.9rem;
-}
-
-.profilepage-action-btn svg {
-  margin-right: 6px;
-}
-
-.profilepage-action-btn.edit-profile-btn:hover {
-  background-color: #e9ecef;
-  border-color: #bbb;
-}
-
-.profilepage-action-btn.follow-btn {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-.profilepage-action-btn.follow-btn:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
-}
-
-.profilepage-action-btn.follow-btn.following {
-  background-color: #6c757d;
-  border-color: #6c757d;
-  color: white;
-}
-
-.profilepage-action-btn.follow-btn.following:hover {
-  background-color: #545b62;
-  border-color: #545b62;
-}
-
-/* Stats Section */
-.profilepage-stats {
-  display: flex;
-  justify-content: flex-start; /* Align to start, or space-around */
-  gap: 1.5rem; /* Space between stat items */
-  padding: 1rem 0;
-  margin-bottom: 1.5rem;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-}
-
-.profilepage-stat-item {
-  text-align: center; /* Or left if preferred */
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.profilepage-stat-item strong {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #333;
-}
-
-/* Bio and Interests Section */
-.profilepage-bio-interests {
-  margin-bottom: 2rem;
-  text-align: left; /* Default text align */
-  width: 100%;
-}
-
-.profilepage-bio {
-  color: #454545;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-  white-space: pre-wrap; /* Respect newlines in bio */
-}
-
-.profilepage-bio-empty,
-.profilepage-interests-empty {
-  color: #777;
-  font-style: italic;
-  margin-bottom: 1rem;
-}
-
-.link-style {
-  background: none;
-  border: none;
-  color: #007bff;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 0;
-  font-size: inherit;
-}
-
-.profilepage-interests {
-  margin-top: 1rem;
-}
-
-.profilepage-interests strong {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #333;
-  font-weight: 600;
-}
-
-.profilepage-interests-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.profilepage-interest-tag {
-  background-color: #e9ecef;
-  color: #495057;
-  padding: 0.3rem 0.7rem;
-  border-radius: 1rem; /* Pill shape */
-  font-size: 0.85rem;
-}
-
-/* Edit Profile Form */
-.profilepage-edit-form {
-  width: 100%;
-  margin-bottom: 2rem;
-  border: 1px solid #eee;
-  padding: 1.5rem;
-  border-radius: 8px;
-  background-color: #fdfdfd;
-}
-
-.profilepage-form-group {
-  margin-bottom: 1rem;
-}
-
-.profilepage-form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.profilepage-form-group textarea,
-.profilepage-form-group input[type="text"] {
-  width: 100%;
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.95rem;
-  box-sizing: border-box;
-}
-
-.profilepage-form-group textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-.profilepage-edit-actions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-
-.profilepage-action-btn.save-btn {
-  background-color: #28a745;
-  color: white;
-  border-color: #28a745;
-}
-.profilepage-action-btn.save-btn:hover {
-  background-color: #1e7e34;
-  border-color: #1e7e34;
-}
-
-.profilepage-action-btn.cancel-btn {
-  background-color: #dc3545;
-  color: white;
-  border-color: #dc3545;
-}
-.profilepage-action-btn.cancel-btn:hover {
-  background-color: #b02a37;
-  border-color: #b02a37;
-}
-
-/* Posts Section */
-.profilepage-posts-section {
-  margin-top: 2rem;
-}
-
-.profilepage-section-title {
-  font-size: 1.5rem; /* Larger title for sections */
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #333;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #eee;
-}
-
-.profilepage-posts-grid {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(280px, 1fr)
-  ); /* Responsive grid */
-  gap: 1.5rem;
-}
-
-.profilepage-noposts {
-  color: #6c757d;
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  padding-top: 70px;
+  position: relative;
 }
 
 .profilepage-not-found {
@@ -393,15 +30,12 @@
 }
 
 .profilepage-loader-container {
+  /* If used for overall page loading state */
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px; /* Ensure loader is visible */
+  min-height: 200px;
 }
-
-/* Removed .profilepage-card as the main container is now .profilepage-main-content */
-/* Removed .profilepage-email as it's not displayed */
-/* Removed .profilepage-edit-btn as it's replaced by .profilepage-action-btn.edit-profile-btn */
 
 @keyframes fadeInUp {
   from {
@@ -414,87 +48,19 @@
   }
 }
 
-/* Responsive adjustments */
+/* General Responsive adjustments for ProfilePage layout */
 @media (max-width: 768px) {
   .profilepage-outer {
     padding-top: 0.5rem;
   }
-  .profilepage-cover-photo-container {
-    height: 200px;
-    margin-bottom: -50px; /* Adjust overlap for smaller avatar */
-  }
   .profilepage-main-content {
     padding: 1rem;
-    padding-top: 60px; /* Adjust for smaller avatar */
-  }
-  .profilepage-header-section {
-    flex-direction: column; /* Stack avatar, details, actions */
-    align-items: center; /* Center items when stacked */
-    text-align: center;
-  }
-  .profilepage-avatar-wrapper {
-    width: 100px;
-    height: 100px;
-    margin-right: 0;
-    margin-bottom: 1rem;
-  }
-  .profilepage-user-details {
-    padding-bottom: 0.5rem;
-  }
-  .profilepage-actions {
-    margin-left: 0; /* Remove auto margin */
-    margin-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-  .profilepage-stats {
-    flex-direction: column; /* Stack stats */
-    gap: 0.5rem;
-    align-items: center;
-    padding: 0.75rem 0;
-  }
-  .profilepage-stat-item strong {
-    font-size: 1.1rem;
-  }
-  .profilepage-posts-grid {
-    grid-template-columns: 1fr; /* Single column for posts */
-  }
-  .profilepage-cover-edit-btn-text {
-    display: none; /* Hide text on small screens, show only icon */
-  }
-  .profilepage-cover-edit-btn {
-    padding: 6px 8px;
+    padding-top: 60px; /* Adjust for smaller avatar and cover overlap */
   }
 }
 
 @media (max-width: 480px) {
-  .profilepage-cover-photo-container {
-    height: 160px;
-    margin-bottom: -40px;
-  }
   .profilepage-main-content {
-    padding-top: 50px;
-  }
-  .profilepage-avatar-wrapper {
-    width: 80px;
-    height: 80px;
-  }
-  .profilepage-username {
-    font-size: 1.5rem;
-  }
-  .profilepage-action-btn {
-    font-size: 0.85rem;
-    padding: 0.4rem 0.8rem;
-  }
-  .profilepage-stats {
-    gap: 0.25rem;
-  }
-  .profilepage-stat-item strong {
-    font-size: 1rem;
-  }
-  .profilepage-stat-item {
-    font-size: 0.8rem;
-  }
-  .profilepage-section-title {
-    font-size: 1.3rem;
+    padding-top: 50px; /* Further adjust for smaller avatar */
   }
 }
