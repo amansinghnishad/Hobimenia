@@ -41,6 +41,7 @@
   align-items: center;
   font-size: 0.9rem;
   transition: background-color 0.2s ease;
+  z-index: 10;
 }
 
 .profilepage-cover-edit-btn:hover {
@@ -60,7 +61,7 @@
   background: #fff;
   border-radius: 0 0 12px 12px; /* Rounded bottom corners if cover has top */
   /* If no separate card for top section, then all corners rounded here */
-  /* border-radius: 12px; */ 
+  /* border-radius: 12px; */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
   padding-top: 70px; /* Space for the overlapping avatar */
@@ -81,10 +82,10 @@
   border-radius: 50%;
   margin-right: 1.5rem;
   /* Avatar is large and overlaps */
-  width: 120px; 
+  width: 120px;
   height: 120px;
   border: 5px solid #fff; /* Border to lift it off the cover */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   /* margin-top: -60px; This was moved to .profilepage-cover-photo-container negative margin */
   background-color: #ccc; /* Fallback if image is missing */
 }
@@ -364,7 +365,10 @@
 
 .profilepage-posts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(280px, 1fr)
+  ); /* Responsive grid */
   gap: 1.5rem;
 }
 
@@ -455,7 +459,7 @@
     grid-template-columns: 1fr; /* Single column for posts */
   }
   .profilepage-cover-edit-btn-text {
-     display: none; /* Hide text on small screens, show only icon */
+    display: none; /* Hide text on small screens, show only icon */
   }
   .profilepage-cover-edit-btn {
     padding: 6px 8px;

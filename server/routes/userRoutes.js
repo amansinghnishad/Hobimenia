@@ -12,10 +12,8 @@ import {
 
 const router = express.Router();
 
-// Public profile data
-router.get("/:id", getUserProfile); // Made public, or use protect if auth is strictly needed for all profile views
+router.get("/:id", getUserProfile);
 
-// Protected routes for modifying profile, following, etc.
 router.put("/profile", protect, updateUserProfile);
 router.patch("/profile-pic", protect, parser.single("profilePic"), updateProfilePic);
 router.patch("/cover-photo", protect, parser.single("coverPhoto"), updateCoverPhoto);

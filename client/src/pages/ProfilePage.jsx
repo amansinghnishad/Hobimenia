@@ -234,7 +234,8 @@ const ProfilePage = () => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.message || `Failed to ${action} @${profile.username}.`
+        err.response?.data?.message ||
+          `Failed to ${action} @${profile.username}.`
       );
     } finally {
       setFollowLoading(false);
@@ -430,19 +431,14 @@ const ProfilePage = () => {
             </div>
           ) : (
             <div className="profilepage-bio-interests">
-              {profile.bio && (
-                <p className="profilepage-bio">{profile.bio}</p>
-              )}
+              {profile.bio && <p className="profilepage-bio">{profile.bio}</p>}
               {!profile.bio && user?._id !== profile?._id && (
                 <p className="profilepage-bio-empty">No bio yet.</p>
               )}
               {!profile.bio && user?._id === profile?._id && (
                 <p className="profilepage-bio-empty">
                   No bio yet.{" "}
-                  <button
-                    onClick={handleEditProfile}
-                    className="link-style"
-                  >
+                  <button onClick={handleEditProfile} className="link-style">
                     Add bio
                   </button>
                 </p>
@@ -453,10 +449,7 @@ const ProfilePage = () => {
                   <strong>Interests:</strong>
                   <div className="profilepage-interests-tags">
                     {profile.interests.map((interest, index) => (
-                      <span
-                        key={index}
-                        className="profilepage-interest-tag"
-                      >
+                      <span key={index} className="profilepage-interest-tag">
                         {interest}
                       </span>
                     ))}
@@ -467,10 +460,7 @@ const ProfilePage = () => {
                 user?._id === profile?._id && (
                   <p className="profilepage-interests-empty">
                     No interests listed.{" "}
-                    <button
-                      onClick={handleEditProfile}
-                      className="link-style"
-                    >
+                    <button onClick={handleEditProfile} className="link-style">
                       Add interests
                     </button>
                   </p>
