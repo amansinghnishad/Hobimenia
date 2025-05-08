@@ -76,12 +76,18 @@ const PostCard = ({ post, onDeleted, onUpdated }) => {
               {post.author?.username?.[0]?.toUpperCase() || "?"}
             </div>
           )}
-          <Link
-            to={`/profile/${post.author?._id}`}
-            className="post-card-username"
-          >
-            {post.author?.username}
-          </Link>
+          <div>
+            <Link
+              to={`/profile/${post.author?._id}`}
+              className="post-card-username"
+            >
+              {post.author?.username}
+            </Link>
+            {/* Display Category */}
+            {post.category && (
+              <span className="post-card-category-badge">{post.category}</span>
+            )}
+          </div>
         </div>
         {user?._id === post.author?._id && (
           <div className="post-card-controls">

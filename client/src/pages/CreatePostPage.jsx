@@ -9,6 +9,20 @@ import { toast } from "react-toastify";
 // import ReactMarkdown from "react-markdown"; // Temporarily commented out if not essential
 import "../css/pagesCSS/CreatePostPage.css";
 
+const CATEGORIES = [
+  "Tech",
+  "Photography",
+  "Designing",
+  "Drawing",
+  "Music",
+  "Writing",
+  "Gaming",
+  "Travel",
+  "Food",
+  "Lifestyle",
+  "Other",
+];
+
 const CreatePostPage = () => {
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -16,6 +30,7 @@ const CreatePostPage = () => {
   const [caption, setCaption] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [category, setCategory] = useState(CATEGORIES[0]); // Default to the first category
   const [loading, setLoading] = useState(false);
 
   // Handle image selection from ImageUploader
@@ -40,9 +55,14 @@ const CreatePostPage = () => {
       toast.error("Caption cannot be empty.");
       return;
     }
+    if (!category) {
+      toast.error("Please select a category.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("caption", caption);
+    formData.append("category", category); // Add category to formData
     if (imageFile) formData.append("image", imageFile);
 
     try {
@@ -80,6 +100,26 @@ const CreatePostPage = () => {
                   <img src={imageUrl} alt="Selected preview" />
                 </div>
               )}
+            </div>
+
+            {/* Category Selection Dropdown */}
+            <div className="create-postpage-form-group">
+              <label htmlFor="category" className="create-postpage-label">
+                Category
+              </label>
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="create-postpage-select"
+                required
+              >
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Caption Section */}

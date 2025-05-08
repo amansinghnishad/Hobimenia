@@ -24,14 +24,43 @@ const userSchema = new mongoose.Schema(
     bio: {
       type: String,
       default: "",
+      maxlength: 250,
     },
     profilePic: {
       type: String,
       default: "",
     },
+    // New fields based on the design
+    interests: [{
+      type: String,
+      trim: true,
+    }],
+    followers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }],
+    following: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }],
+    coverPhoto: {
+      type: String,
+      default: "",
+    }
   },
   { timestamps: true }
 );
+
+userSchema.virtual('followersCount').get(function () {
+  return this.followers ? this.followers.length : 0;
+});
+
+userSchema.virtual('followingCount').get(function () {
+  return this.following ? this.following.length : 0;
+});
+
+userSchema.set('toJSON', { virtuals: true });
+userSchema.set('toObject', { virtuals: true });
 
 // Hash password before saving
 userSchema.pre("save", async function (next) {

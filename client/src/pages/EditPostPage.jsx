@@ -8,12 +8,27 @@ import Navbar from "../components/Navbar";
 import ReactMarkdown from "react-markdown";
 import "../css/pagesCSS/EditPostPage.css";
 
+const CATEGORIES = [
+  "Tech",
+  "Photography",
+  "Designing",
+  "Drawing",
+  "Music",
+  "Writing",
+  "Gaming",
+  "Travel",
+  "Food",
+  "Lifestyle",
+  "Other",
+];
+
 const EditPostPage = () => {
   const { id } = useParams(); // Post ID
   const navigate = useNavigate();
   const { token } = useContext(AuthContext);
 
   const [caption, setCaption] = useState("");
+  const [category, setCategory] = useState(CATEGORIES[0]); // Add category state
   const [image, setImage] = useState(null);
   const [currentImage, setCurrentImage] = useState("");
   const [previewImage, setPreviewImage] = useState("");
@@ -28,11 +43,16 @@ const EditPostPage = () => {
         });
         setCaption(res.data.caption);
         setCurrentImage(res.data.imageUrl); // assuming the image URL is returned
+        setCategory(res.data.category || CATEGORIES[0]); // Set category from fetched post, or default
       } catch (err) {
         console.error("Failed to fetch post", err);
+        toast.error("Failed to load post data."); // Notify user
       }
     };
-    fetchPost();
+    if (token && id) {
+      // Ensure token and id are present before fetching
+      fetchPost();
+    }
   }, [id, token]);
 
   const handleFileChange = (e) => {
@@ -52,8 +72,18 @@ const EditPostPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!caption.trim()) {
+      toast.error("Caption cannot be empty.");
+      return;
+    }
+    if (!category) {
+      toast.error("Please select a category.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("caption", caption);
+    formData.append("category", category); // Add category to formData
     if (image) formData.append("image", image);
 
     try {
@@ -79,6 +109,26 @@ const EditPostPage = () => {
         <div className="edit-postpage-card">
           <h2 className="edit-postpage-title">Edit Post</h2>
           <form onSubmit={handleSubmit} className="edit-postpage-form">
+            {/* Category Selection Dropdown */}
+            <div className="edit-postpage-form-group">
+              <label htmlFor="category" className="edit-postpage-label">
+                Category
+              </label>
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="edit-postpage-select" // You might need to add styling for this class
+                required
+              >
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="edit-postpage-form-group">
               <textarea
                 placeholder="Edit your caption..."

@@ -5,13 +5,16 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Import the logger first to ensure it's available
+import logger from "./config/logger.js";
+
 const dotenvResult = dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-console.log(`Attempting to load .env file from: ${path.resolve(__dirname, '.env')}`);
+logger.info(`Attempting to load .env file from: ${path.resolve(__dirname, '.env')}`);
 if (dotenvResult.error) {
-  console.error('❌ Error loading .env file:', dotenvResult.error);
+  logger.error('❌ Error loading .env file:', dotenvResult.error);
 } else {
-  console.log('✅ .env file loaded successfully. Parsed variables:', Object.keys(dotenvResult.parsed || {}));
+  logger.info('✅ .env file loaded successfully. Parsed variables:', Object.keys(dotenvResult.parsed || {}));
 }
 
 import cloudinary, { initializeCloudinary } from "./utils/cloudinary.js";
@@ -49,6 +52,7 @@ app.use(cors({
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      logger.warn(`CORS blocked origin: ${origin}`);
       return callback(new Error(msg), false);
     }
     return callback(null, true);
@@ -56,7 +60,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use(morgan("dev"));
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', { stream: logger.stream }));
 app.use(cookieParser());
 
 app.use(express.json({ limit: "10mb" }));
@@ -81,9 +85,20 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res) => {
+  logger.warn(`404 Not Found - ${req.method} ${req.originalUrl}`);
   res.status(404).json({ message: "API route not found" });
 });
 
+// Add a generic error handler to log unhandled errors
+app.use((err, req, res, next) => {
+  logger.error(`Unhandled error: ${err.message}`, {
+    stack: err.stack,
+    url: req.originalUrl,
+    method: req.method
+  });
+  res.status(500).json({ message: "Internal Server Error" });
+});
+
 app.listen(PORT, () => {
-  console.log(`✅ Server running in ${process.env.NODE_ENV} on port ${PORT}`);
+  logger.info(`✅ Server running in ${process.env.NODE_ENV} on port ${PORT}`);
 });
