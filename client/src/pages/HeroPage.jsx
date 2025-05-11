@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "../css/pagesCSS/HeroPage.css";
 import AboutUs from "../components/AboutUs";
-// import ContactUs from "../components/ContactUs";
+import ContactUs from "../components/ContactUs";
 
 const HeroPage = () => {
   const location = useLocation();
@@ -179,9 +179,9 @@ const HeroPage = () => {
       <div id="about-us-section">
         <AboutUs />
       </div>
-      {/* <div id="contact-us-section">
+      <div id="contact-us-section">
         <ContactUs />
-      </div> */}
+      </div>
     </div>
   );
 };

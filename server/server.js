@@ -34,6 +34,7 @@ import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
+import contactRoutes from './routes/contactRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -79,6 +80,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/ai", aiRoutes);
+app.use('/api/contact', contactRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hobimenia API is running 🚀");
