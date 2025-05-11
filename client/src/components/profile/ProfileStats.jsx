@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/componentCSS/Profile/ProfileStats.css";
+import "../../css/componentCSS/profile/ProfileStats.css";
 
 const ProfileStats = ({ profile, postsCountFromParent }) => {
   if (!profile) return null;
