@@ -1,4 +1,3 @@
-/* Styles for ProfileBioInterests component */
 .profilepage-bio-interests {
   margin-bottom: 2rem;
   text-align: left;
@@ -20,7 +19,6 @@
 }
 
 .link-style {
-  /* This could be a global utility if used elsewhere */
   background: none;
   border: none;
   color: #007bff;
@@ -55,7 +53,6 @@
   font-size: 0.85rem;
 }
 
-/* Edit Profile Form specific to ProfileBioInterests */
 .profilepage-edit-form {
   width: 100%;
   margin-bottom: 2rem;
@@ -97,9 +94,6 @@
   margin-top: 1.5rem;
 }
 
-/* Save and Cancel button styles, assuming .profilepage-action-btn base is available or defined in ProfileHeader.css */
-/* If ProfileHeader.css is not globally imported, you might need to redefine .profilepage-action-btn base here or ensure it's imported. */
-/* For now, defining variants assuming base is somehow available. */
 .profilepage-action-btn.save-btn {
   background-color: #28a745;
   color: white;

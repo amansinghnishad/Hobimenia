@@ -212,3 +212,40 @@ export const unfollowUser = async (req, res) => {
     res.status(500).json({ message: "Failed to unfollow user", error: err.message });
   }
 };
+
+export const getUserFollowers = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).populate({
+      path: 'followers',
+      select: '_id username profilePic', // Select fields you want to return
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user.followers);
+  } catch (error) {
+    console.error('Error fetching followers:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+export const getUserFollowing = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).populate({
+      path: 'following',
+      select: '_id username profilePic', // Select fields you want to return
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user.following);
+  } catch (error) {
+    console.error('Error fetching following:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

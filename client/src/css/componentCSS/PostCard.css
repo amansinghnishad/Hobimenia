@@ -27,9 +27,9 @@
   border: 2px solid #bfdbfe;
   box-shadow: 0 1px 4px rgba(59, 130, 246, 0.1);
 }
-.post-card-user-info {
+.post-card-userinfo {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 .post-card-username {
   font-weight: 600;
@@ -260,13 +260,6 @@
   .post-card {
     padding: 1rem;
     border-radius: 0.5rem;
-  }
-  .post-card-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .post-card-user-info {
-    margin-bottom: 0.5rem;
   }
   .post-card-content {
     font-size: 0.9rem;

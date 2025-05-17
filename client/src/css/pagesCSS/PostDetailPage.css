@@ -1,4 +1,3 @@
-/* PostDetailPage Normal CSS */
 .postdetail-outer {
   display: flex;
   justify-content: center;
@@ -88,9 +87,9 @@
   border-radius: 0.5rem;
   font-weight: 600;
   box-shadow: 0 1px 4px rgba(59, 130, 246, 0.05);
-  border: 1px solid #e5e7eb;
-  background: #f3f4f6;
-  color: #64748b;
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border 0.2s;
 }
@@ -116,5 +115,84 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .postdetail-outer {
+    padding-top: 7rem;
+    padding-bottom: 2rem;
+  }
+
+  .postdetail-card {
+    padding: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    width: calc(100% - 1rem);
+  }
+
+  .postdetail-header {
+    gap: 0.5rem;
+  }
+
+  .postdetail-avatar,
+  .postdetail-avatar-fallback {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .postdetail-avatar-fallback {
+    font-size: 1rem;
+  }
+
+  .postdetail-username {
+    font-size: 1rem;
+  }
+
+  .postdetail-date {
+    font-size: 0.7rem;
+  }
+
+  .postdetail-caption {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .postdetail-img {
+    max-height: 300px;
+  }
+
+  .postdetail-like-row {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .postdetail-like-btn {
+    font-size: 1rem;
+    padding: 0.4rem 1rem;
+  }
+
+  .postdetail-comment-section {
+    padding-top: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .postdetail-outer {
+    padding-top: 6rem;
+  }
+  .postdetail-card {
+    border-radius: 0.75rem;
+  }
+  .postdetail-username {
+    font-size: 0.9rem;
+  }
+  .postdetail-caption {
+    font-size: 0.85rem;
+  }
+  .postdetail-like-btn {
+    font-size: 0.9rem;
+    padding: 0.35rem 0.75rem;
+    gap: 0.2rem;
   }
 }

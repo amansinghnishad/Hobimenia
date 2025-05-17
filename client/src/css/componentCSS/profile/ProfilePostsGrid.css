@@ -1,4 +1,3 @@
-/* Styles for ProfilePostsGrid component */
 .profilepage-posts-section {
   margin-top: 2rem;
 }
@@ -27,10 +26,9 @@
   border-radius: 8px;
 }
 
-/* Responsive adjustments for ProfilePostsGrid */
 @media (max-width: 768px) {
   .profilepage-posts-grid {
-    grid-template-columns: 1fr; /* Single column for posts */
+    grid-template-columns: 1fr;
   }
 }
 

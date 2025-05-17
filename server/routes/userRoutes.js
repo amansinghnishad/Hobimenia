@@ -8,11 +8,15 @@ import {
   updateCoverPhoto,
   followUser,
   unfollowUser,
+  getUserFollowers,
+  getUserFollowing,
 } from "../controllers/userController.js";
 
 const router = express.Router();
 
 router.get("/:id", getUserProfile);
+router.get("/:userId/followers", protect, getUserFollowers);
+router.get("/:userId/following", protect, getUserFollowing);
 
 router.put("/profile", protect, updateUserProfile);
 router.patch("/profile-pic", protect, parser.single("profilePic"), updateProfilePic);

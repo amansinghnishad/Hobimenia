@@ -1,4 +1,3 @@
-/* HomePage Normal CSS */
 .homepage-outer {
   min-height: 100vh;
   background: linear-gradient(135deg, #eff6ff 0%, #ede9fe 100%);
@@ -43,14 +42,14 @@
 
 @media (max-width: 768px) {
   .homepage-outer {
-    padding-top: 6rem; /* Adjust padding for smaller screens */
+    padding-top: 6rem;
   }
 
   .homepage-inner {
-    padding: 1rem 0.5rem; /* Adjust padding for smaller screens */
+    padding: 1rem 0.5rem;
   }
 
   .homepage-title {
-    font-size: 1.5rem; /* Adjust font size for smaller screens */
+    font-size: 1.5rem;
   }
 }

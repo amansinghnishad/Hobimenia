@@ -1,0 +1,158 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+}
+
+.user-list-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.user-list-modal-overlay.closing {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+.user-list-modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideInUp 0.3s ease-out forwards;
+}
+
+.user-list-modal-content.closing {
+  animation: slideOutDown 0.3s ease-out forwards;
+}
+
+.user-list-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.user-list-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.user-list-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+  line-height: 1;
+}
+.user-list-modal-close-btn:hover {
+  color: #333;
+}
+
+.user-list-modal-body {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 5px;
+}
+
+.user-list-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #eef0f2;
+  transition: background-color 0.2s ease-in-out;
+}
+.user-list-item:last-child {
+  border-bottom: none;
+}
+.user-list-item:hover {
+  background-color: #f8f9fa;
+}
+
+.user-list-item-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  border: 1px solid #dee2e6;
+}
+
+.user-list-item-username-link {
+  text-decoration: none;
+  color: #212529;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.user-list-item-username-link:hover {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.user-list-item span {
+  font-size: 1rem;
+}
+
+.profilepage-stat-item.clickable {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.profilepage-stat-item.clickable:hover {
+  color: #007bff;
+}

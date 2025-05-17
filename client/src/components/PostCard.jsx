@@ -63,13 +63,6 @@ const PostCard = ({ post, onDeleted, onUpdated }) => {
               src={post.author.profilePic}
               alt={post.author.username}
               className="post-card-avatar"
-              style={{
-                objectFit: "cover",
-                width: "auto",
-                height: "auto",
-                maxWidth: "40px",
-                maxHeight: "40px",
-              }}
             />
           ) : (
             <div className="post-card-avatar">

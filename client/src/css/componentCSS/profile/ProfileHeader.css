@@ -1,4 +1,3 @@
-/* Styles for ProfileHeader component */
 .profilepage-header-section {
   display: flex;
   align-items: flex-end;
@@ -134,7 +133,6 @@
   border-color: #545b62;
 }
 
-/* Responsive adjustments for ProfileHeader */
 @media (max-width: 768px) {
   .profilepage-header-section {
     flex-direction: column;

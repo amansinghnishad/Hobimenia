@@ -1,9 +1,7 @@
-/* AIHelperButton Normal CSS */
 .ai-helper-container {
   margin-top: 1.5rem;
 }
 
-/* AIHelperButton Normal CSS */
 .ai-helper-textarea {
   width: 100%;
   border: 1px solid #bfdbfe;
@@ -23,39 +21,32 @@
   box-shadow: 0 0 0 2px #60a5fa33;
 }
 .ai-helper-btn {
-  /* Apply styles similar to .create-postpage-submit-btn */
-  display: inline-flex; /* Use flex to align icon and text */
-  align-items: center; /* Center items vertically */
-  gap: 0.5rem; /* Add space between icon and text */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background: linear-gradient(90deg, #6366f1 0%, #a78bfa 100%);
   color: #fff;
-  padding: 0.6rem 1.2rem; /* Adjust padding for desired size */
+  padding: 0.6rem 1.2rem;
   border-radius: 0.5rem;
   font-weight: 600;
-  font-size: 0.9rem; /* Slightly smaller font */
+  font-size: 0.9rem;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
   border: none;
   cursor: pointer;
   transition: background 0.2s;
 }
 .ai-helper-btn:hover {
-  background: linear-gradient(
-    90deg,
-    #4f46e5 0%,
-    #a78bfa 100%
-  ); /* Match hover gradient */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Keep existing or adjust */
+  background: linear-gradient(90deg, #4f46e5 0%, #a78bfa 100%);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 .ai-helper-btn:disabled {
-  /* Adjust disabled state if needed, e.g., using a gray gradient or reduced opacity */
-  background: #9ca3af; /* Simple gray background */
+  background: #9ca3af;
   opacity: 0.7;
   cursor: not-allowed;
   box-shadow: none;
 }
 .ai-helper-btn-icon {
-  /* Optional: Adjust icon size or color if needed */
-  font-size: 1.1em; /* Make icon slightly larger than text */
+  font-size: 1.1em;
 }
 .ai-helper-suggestion {
   margin-top: 1rem;

@@ -1,4 +1,3 @@
-/* Styles for ProfileCoverPhoto component */
 .profilepage-cover-photo-container {
   width: 100%;
   height: 250px;
@@ -6,8 +5,7 @@
   border-radius: 12px 12px 0 0;
   position: relative;
   overflow: hidden;
-  margin-bottom: -60px; /* This negative margin is to allow the avatar from ProfileHeader to overlap. */
-  /* Consider if this coupling is desired or if ProfilePage.css should manage overall layout. */
+  margin-bottom: -60px;
 }
 
 .profilepage-cover-photo {
@@ -45,14 +43,13 @@
   display: inline;
 }
 
-/* Responsive adjustments for ProfileCoverPhoto */
 @media (max-width: 768px) {
   .profilepage-cover-photo-container {
     height: 200px;
-    margin-bottom: -50px; /* Adjust overlap for smaller avatar */
+    margin-bottom: -50px;
   }
   .profilepage-cover-edit-btn-text {
-    display: none; /* Hide text on small screens, show only icon */
+    display: none;
   }
   .profilepage-cover-edit-btn {
     padding: 6px 8px;
