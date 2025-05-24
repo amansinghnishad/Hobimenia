@@ -1,5 +1,5 @@
 import express from 'express';
-import { handleContactForm } from '../controllers/contactController.js';
+import { handleContactForm, validateEmailWithZeroBounce } from '../controllers/contactController.js';
 import rateLimit from "express-rate-limit";
 import logger from '../config/logger.js';
 
@@ -15,10 +15,24 @@ const contactFormLimiter = rateLimit({
     logger.warn(`Rate limit exceeded for contact form: ${req.ip}`);
     res.status(options.statusCode).json(options.message);
   },
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+
+const emailValidationLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 30,
+  message: { message: "Too many email validation requests from this IP, please try again after 5 minutes." },
+  handler: (req, res, next, options) => {
+    logger.warn(`Rate limit exceeded for email validation: ${req.ip}`);
+    res.status(options.statusCode).json(options.message);
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 router.post('/', contactFormLimiter, handleContactForm);
+router.post('/validate-email', emailValidationLimiter, validateEmailWithZeroBounce);
 
 export default router;

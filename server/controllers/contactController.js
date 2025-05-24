@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import logger from '../config/logger.js';
+import axios from 'axios'; // Import axios
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +12,55 @@ const __dirname = path.dirname(__filename);
 const envPath = path.resolve(__dirname, '..', '.env');
 dotenv.config({ path: envPath });
 
+
+export const validateEmailWithZeroBounce = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ isValid: false, message: 'Email is required.' });
+  }
+
+  if (!process.env.ZEROBOUNCE_API_KEY) {
+    logger.error('ZeroBounce API key is not configured in .env');
+
+    return res.status(500).json({ isValid: false, message: 'Email validation service is not configured.' });
+  }
+
+  try {
+    const apiKey = process.env.ZEROBOUNCE_API_KEY;
+    const ipAddress = req.ip;
+
+    const response = await axios.get(`https://api.zerobounce.net/v2/validate`, {
+      params: {
+        api_key: apiKey,
+        email: email,
+        ip_address: ipAddress,
+      },
+    });
+
+    const { data } = response;
+
+    // Interpret ZeroBounce status
+    // Valid statuses: 'valid', 'catch-all' (you might treat catch-all as valid or risky)
+    // Invalid statuses: 'invalid', 'abuse', 'do_not_mail', 'unknown', 'spamtrap'
+    // For a contact form, 'valid' is ideal. 'catch-all' means the domain accepts all mail,
+    // but the specific address might not exist. You need to decide your tolerance.
+    if (data.status === 'valid' || data.status === 'catch-all') {
+      logger.info(`ZeroBounce validation for ${email}: ${data.status}`);
+      return res.status(200).json({ isValid: true, message: 'Email appears to be valid.', status: data.status });
+    } else {
+      logger.warn(`ZeroBounce validation for ${email} failed: ${data.status} - ${data.sub_status}`);
+      return res.status(200).json({ isValid: false, message: `Email address appears to be ${data.status}. ${data.sub_status ? '(' + data.sub_status + ')' : ''}`, status: data.status });
+    }
+  } catch (error) {
+    logger.error('Error calling ZeroBounce API:', {
+      message: error.message,
+      email: email,
+      response: error.response ? error.response.data : 'No response data',
+    });
+    return res.status(500).json({ isValid: false, message: 'Error validating email with external service.' });
+  }
+};
 
 export const handleContactForm = async (req, res) => {
   const { name, email, subject, message } = req.body;
@@ -23,7 +73,7 @@ export const handleContactForm = async (req, res) => {
       body: {
         name: !!name,
         email: !!email,
-        subject: !!subject, // Added subject here
+        subject: !!subject,
         message: !!message
       }
     });
@@ -37,12 +87,12 @@ export const handleContactForm = async (req, res) => {
     return res.status(400).json({ message: 'Invalid email format.' });
   }
 
-  const submissionDate = new Date(); // Get current date and time
+  const submissionDate = new Date();
 
   const mailOptions = {
-    from: `"${name}" <${process.env.EMAIL_USER}>`, // Sender address (your configured email)
-    replyTo: email, // User's email address
-    to: process.env.CONTACT_FORM_RECEIVER_EMAIL, // Receiver email address (from .env)
+    from: `"${name}" <${process.env.EMAIL_USER}>`,
+    replyTo: email,
+    to: process.env.CONTACT_FORM_RECEIVER_EMAIL,
     subject: `🚀 New Contact Form Submission: ${subject}`,
     text: `New Contact Form Submission
 -----------------------------
@@ -114,7 +164,6 @@ This email was sent from the contact form on your website.`,
       name,
       email,
       subject,
-      // Do not log full message content here if it could be very large or sensitive
     });
     // Check for specific nodemailer errors if helpful
     if (error.code === 'EENVELOPE') {
