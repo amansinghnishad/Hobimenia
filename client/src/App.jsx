@@ -10,6 +10,7 @@ import PostDetailPage from "./pages/PostDetailPage";
 import HeroPage from "./pages/HeroPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditPostPage from "./pages/EditPostPage";
+import NotificationsList from "./components/NotificationsList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -22,6 +23,15 @@ const App = () => {
           <Route path="/" element={<HeroPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <NotificationsList />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/home"

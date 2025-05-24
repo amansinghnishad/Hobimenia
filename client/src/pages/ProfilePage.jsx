@@ -207,7 +207,6 @@ const ProfilePage = () => {
     setFollowLoading(true);
     const action = isFollowing ? "unfollow" : "follow";
     try {
-      // The backend should return the updated target user's profile data
       const res = isFollowing
         ? await api.delete(`/users/${profile._id}/unfollow`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -220,12 +219,18 @@ const ProfilePage = () => {
             }
           );
 
-      // Update profile state with the data returned from the backend
+      // Update profile state with the targetUser data returned from the backend
       setProfile(res.data.targetUser);
-      setIsFollowing(!isFollowing);
+      // Update the isFollowing state based on the new followers list of the targetUser
+      setIsFollowing(res.data.targetUser.followers.includes(user._id));
+
+      // Update the logged-in user's context if their following list changed
+      if (res.data.currentUser) {
+        loginContext(res.data.currentUser, token);
+      }
 
       toast.success(
-        `${isFollowing ? "Unfollowed" : "Followed"} @${
+        `${action === "follow" ? "Followed" : "Unfollowed"} @${
           res.data.targetUser.username
         }`
       );
@@ -234,6 +239,8 @@ const ProfilePage = () => {
         err.response?.data?.message ||
           `Failed to ${action} @${profile.username}.`
       );
+      // Optionally, re-fetch profile to ensure UI consistency on error
+      // fetchProfile();
     } finally {
       setFollowLoading(false);
     }

@@ -232,6 +232,84 @@
 .navbar-btn-signup:hover {
   background: #16a34a;
 }
+.navbar-notifications-btn {
+  background: none;
+  border: none;
+  color: inherit; /* Or your specific link color */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative; /* For badge positioning */
+  padding: 0.5rem 1rem; /* Match other link items if necessary */
+}
+
+.navbar-notifications-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Example hover */
+  border-radius: 4px;
+}
+
+.navbar-unread-badge {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  position: absolute;
+  top: 0px; /* Adjusted for better alignment */
+  right: 0px; /* Adjusted for better alignment */
+  line-height: 1;
+  transform: translate(50%, -50%); /* Fine-tune position */
+}
+
+.navbar-unread-badge-mobile {
+  background-color: red;
+  color: white;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 0.7rem;
+  margin-left: 8px;
+}
+
+.navbar-notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 5px); /* Add a small gap from the navbar */
+  right: 20px;
+  background-color: #ffffff; /* Clean white background */
+  border: 1px solid #e5e7eb; /* Softer border color */
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08); /* Softer, more modern shadow */
+  width: 360px; /* Slightly wider */
+  max-width: calc(100vw - 30px);
+  max-height: 450px; /* Adjusted max-height */
+  /* overflow-y: auto; // This will be handled by notifications-scrollable-list inside */
+  z-index: 1000;
+  /* The NotificationsList component itself will have padding and scroll */
+}
+
+/* Adjustments for mobile view if the dropdown is too wide or positioned awkwardly */
+@media (max-width: 768px) {
+  .navbar-notifications-dropdown {
+    right: 10px;
+    left: 10px;
+    width: auto;
+    top: calc(100% + 5px); /* Consistent gap */
+  }
+  .navbar-links-mobile .navbar-notifications-btn {
+    /* If you use a button in mobile too */
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .navbar-unread-badge {
+    /* Adjust badge for mobile if needed, or use navbar-unread-badge-mobile consistently */
+    transform: translate(
+      0,
+      0
+    ); /* Reset transform if it causes issues on mobile icon */
+    position: static; /* Or adjust top/right for mobile if icon layout changes */
+    margin-left: 5px;
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

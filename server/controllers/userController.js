@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Post from "../models/Post.js";
+import Notification from "../models/Notification.js"; // Import Notification model
 import logger from "../config/logger.js"; // Assuming you have a logger
 
 // Get User Profile
@@ -160,7 +161,14 @@ export const followUser = async (req, res) => {
     // Check if already following
     if (currentUser.following.includes(userIdToFollow)) {
       logger.info('User already followed', { currentUserId, userIdToFollow });
-      return res.status(400).json({ message: "You are already following this user." });
+      // Still return updated profiles even if already following, for consistency or if client needs to sync
+      const populatedUserToFollow = await User.findById(userIdToFollow).select("-password");
+      const populatedCurrentUser = await User.findById(currentUserId).select("-password");
+      return res.status(200).json({
+        message: "You are already following this user.",
+        targetUser: populatedUserToFollow,
+        currentUser: populatedCurrentUser
+      });
     }
 
     currentUser.following.push(userIdToFollow);
@@ -169,8 +177,36 @@ export const followUser = async (req, res) => {
     await currentUser.save();
     await userToFollow.save();
 
+    // Create notification for the user being followed
+    if (userToFollow._id.toString() !== currentUser._id.toString()) { // Ensure not self-follow for notification
+      try {
+        await Notification.create({
+          recipient: userToFollow._id,
+          sender: currentUser._id,
+          type: 'follow',
+          message: `${currentUser.username} started following you.`
+        });
+        logger.info('Follow notification created', { recipient: userToFollow._id, sender: currentUser._id });
+      } catch (notificationError) {
+        logger.error('Failed to create follow notification', {
+          error: notificationError.message,
+          recipient: userToFollow._id,
+          sender: currentUser._id
+        });
+        // Decide if you want to let this error block the main response. Usually not.
+      }
+    }
+
+    // Populate the necessary fields before sending back
+    const updatedTargetUser = await User.findById(userIdToFollow).select('-password');
+    const updatedCurrentUser = await User.findById(currentUserId).select('-password');
+
     logger.info('User followed successfully', { currentUserId, userIdToFollow });
-    res.status(200).json({ message: "User followed successfully." });
+    res.status(200).json({
+      message: "User followed successfully.",
+      targetUser: updatedTargetUser,
+      currentUser: updatedCurrentUser
+    });
 
   } catch (err) {
     logger.error("Follow User Error:", { error: err.message, stack: err.stack, currentUserId, userIdToFollow });
@@ -195,7 +231,14 @@ export const unfollowUser = async (req, res) => {
     // Check if not following
     if (!currentUser.following.includes(userIdToUnfollow)) {
       logger.info('User not currently followed', { currentUserId, userIdToUnfollow });
-      return res.status(400).json({ message: "You are not following this user." });
+      // Still return updated profiles even if not following, for consistency
+      const populatedUserToUnfollow = await User.findById(userIdToUnfollow).select("-password");
+      const populatedCurrentUser = await User.findById(currentUserId).select("-password");
+      return res.status(200).json({
+        message: "You are not following this user.",
+        targetUser: populatedUserToUnfollow,
+        currentUser: populatedCurrentUser
+      });
     }
 
     currentUser.following = currentUser.following.filter(id => id.toString() !== userIdToUnfollow);
@@ -204,8 +247,16 @@ export const unfollowUser = async (req, res) => {
     await currentUser.save();
     await userToUnfollow.save();
 
+    // Populate the necessary fields before sending back
+    const updatedTargetUser = await User.findById(userIdToUnfollow).select('-password');
+    const updatedCurrentUser = await User.findById(currentUserId).select('-password');
+
     logger.info('User unfollowed successfully', { currentUserId, userIdToUnfollow });
-    res.status(200).json({ message: "User unfollowed successfully." });
+    res.status(200).json({
+      message: "User unfollowed successfully.",
+      targetUser: updatedTargetUser,
+      currentUser: updatedCurrentUser
+    });
 
   } catch (err) {
     logger.error("Unfollow User Error:", { error: err.message, stack: err.stack, currentUserId, userIdToUnfollow });

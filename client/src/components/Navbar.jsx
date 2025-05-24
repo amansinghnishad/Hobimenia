@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -11,19 +11,34 @@ import {
   FaUserPlus,
   FaUser,
   FaSignOutAlt,
+  FaBell,
 } from "react-icons/fa";
+import NotificationsList from "./NotificationsList";
+import { getNotifications } from "../services/api";
 import "../css/componentCSS/Navbar.css";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const notificationsRef = useRef(null);
 
-  const handleLogout = () => {
-    logout();
-    setIsMobileMenuOpen(false);
-    navigate("/login");
+  const fetchUnreadCount = async () => {
+    if (!user) return;
+    try {
+      const notifications = await getNotifications();
+      const count = notifications.filter((n) => !n.isRead).length;
+      setUnreadCount(count);
+    } catch (error) {
+      console.error("Failed to fetch unread notifications count:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchUnreadCount();
+  }, [user]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,12 +50,44 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target)
+      ) {
+        if (!event.target.closest(".navbar-notifications-btn")) {
+          setShowNotifications(false);
+        }
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [notificationsRef]);
+
+  const handleLogout = () => {
+    logout();
+    setIsMobileMenuOpen(false);
+    setShowNotifications(false);
+    navigate("/login");
+  };
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+    setShowNotifications(false);
   };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    if (!showNotifications) {
+      fetchUnreadCount();
+    }
   };
 
   return (
@@ -67,6 +114,18 @@ const Navbar = () => {
             <Link to={`/profile/${user._id}`} className="navbar-link-item">
               <FaUser className="navbar-link-icon" /> Profile
             </Link>
+
+            <button
+              className="navbar-link-item navbar-notifications-btn"
+              onClick={toggleNotifications}
+              aria-label="Toggle notifications"
+            >
+              <FaBell className="navbar-link-icon" />
+              {unreadCount > 0 && (
+                <span className="navbar-unread-badge">{unreadCount}</span>
+              )}
+              Notifications
+            </button>
             <button onClick={handleLogout} className="navbar-btn-logout">
               <FaSignOutAlt className="navbar-link-icon" /> Logout
             </button>
@@ -110,6 +169,21 @@ const Navbar = () => {
               <button onClick={handleLogout} className="navbar-btn-logout">
                 <FaSignOutAlt className="navbar-link-icon" /> Logout
               </button>
+              <Link
+                to="/notifications" // Or handle with dropdown logic similar to desktop
+                className="navbar-link-item"
+                onClick={() => {
+                  closeMobileMenu();
+                  /* setShowNotifications(true); */
+                }}
+              >
+                <FaBell className="navbar-link-icon" /> Notifications
+                {unreadCount > 0 && (
+                  <span className="navbar-unread-badge-mobile">
+                    {unreadCount}
+                  </span>
+                )}
+              </Link>
             </>
           ) : (
             <>
@@ -143,6 +217,12 @@ const Navbar = () => {
               </Link>
             </>
           )}
+        </div>
+      )}
+
+      {showNotifications && user && (
+        <div className="navbar-notifications-dropdown" ref={notificationsRef}>
+          <NotificationsList />
         </div>
       )}
     </nav>
