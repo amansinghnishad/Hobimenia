@@ -105,6 +105,47 @@
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
+.input-error {
+  border-color: #dc3545 !important; /* Red border for error */
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important; /* Red shadow for error */
+}
+
+.error-message {
+  color: #d9534f; /* Red for errors */
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.success-message {
+  color: #5cb85c; /* Green for success */
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.email-status-container {
+  display: flex;
+  align-items: center;
+  min-height: 20px; /* Reserve space to prevent layout shifts */
+  margin-top: -0.75rem; /* Adjust to align nicely below input */
+  margin-bottom: 0.5rem; /* Add some space before next input */
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+  color: #007bff;
+  font-size: 0.9rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .contact-textarea {
   min-height: 120px;
   resize: vertical;

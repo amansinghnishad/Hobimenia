@@ -55,11 +55,13 @@
 .side-navbar .nav-item .nav-text {
   margin-left: 10px;
   opacity: 0;
-  transition: opacity 0.2s ease-in-out 0.1s;
+  transform: translateX(-20px) translateY(5px);
+  transition: opacity 0.2s ease-in-out 0.3s;
 }
 
 .side-navbar.expanded .nav-item .nav-text {
   opacity: 1;
+  transform: translateX(0) translateY(0);
 }
 
 .side-navbar .nav-item:hover {

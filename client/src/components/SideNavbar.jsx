@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import "../css/componentCSS/SideNavbar.css";
-import { FaHome, FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUser, FaCog, FaSignOutAlt, FaPlus } from "react-icons/fa";
 
 const MOBILE_BREAKPOINT = 768;
 
@@ -32,6 +32,12 @@ const SideNavbar = () => {
   const navLinks = [
     { text: "Home", path: "/home", icon: <FaHome /> },
     { text: "Profile", path: `/profile/${user._id}`, icon: <FaUser /> },
+    {
+      text: "Create Post",
+      path: "/create-post",
+      icon: <FaPlus />,
+      action: () => navigate("/create-post"),
+    },
   ];
 
   const secondaryLinks = [

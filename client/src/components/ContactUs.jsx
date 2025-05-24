@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../css/componentCSS/ContactUs.css";
 import axios from "../api/axios";
+import { FaSpinner } from "react-icons/fa";
 
 const ContactUs = () => {
   const [form, setForm] = useState({
@@ -12,7 +13,11 @@ const ContactUs = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
+  const [emailError, setEmailError] = useState("");
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
+  const [emailSuccessMessage, setEmailSuccessMessage] = useState("");
 
+  // Handle resize
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 600);
@@ -22,6 +27,7 @@ const ContactUs = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Handle submission
   useEffect(() => {
     let timer;
     if (submitted) {
@@ -33,10 +39,81 @@ const ContactUs = () => {
     return () => clearTimeout(timer);
   }, [submitted]);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  // Debounce execution
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(this, args);
+      }, delay);
+    };
   };
 
+  // Verify email
+  const verifyEmailOnServer = useCallback(
+    debounce(async (email) => {
+      if (!email.endsWith("@gmail.com")) {
+        setEmailError("Only Gmail addresses are allowed for now.");
+        setEmailSuccessMessage("");
+        setIsVerifyingEmail(false);
+        return;
+      }
+      if (!email) {
+        setEmailError("");
+        setEmailSuccessMessage("");
+        setIsVerifyingEmail(false);
+        return;
+      }
+
+      setIsVerifyingEmail(true);
+      setEmailError("");
+      setEmailSuccessMessage("");
+      try {
+        const response = await axios.post("/contact/validate-email", { email });
+        if (!response.data.isValid) {
+          setEmailError(response.data.message || "Email is not valid.");
+          setEmailSuccessMessage("");
+        } else {
+          setEmailError("");
+          setEmailSuccessMessage(response.data.message || "Email is valid.");
+        }
+      } catch (error) {
+        console.error("Email verification error:", error);
+        setEmailSuccessMessage("");
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setEmailError(error.response.data.message);
+        } else {
+          setEmailError("Could not verify email. Server error.");
+        }
+      } finally {
+        setIsVerifyingEmail(false);
+      }
+    }, 1000),
+    []
+  );
+
+  // Handle change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+
+    if (name === "email") {
+      setEmailSuccessMessage("");
+      if (!value) {
+        setEmailError("");
+        setIsVerifyingEmail(false);
+      } else {
+        verifyEmailOnServer(value);
+      }
+    }
+  };
+
+  // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.subject || !form.message) {
@@ -44,7 +121,17 @@ const ContactUs = () => {
       return;
     }
 
-    setLoading(true); // Set loading to true before API call
+    if (isVerifyingEmail) {
+      alert("Please wait for email verification to complete.");
+      return;
+    }
+
+    if (emailError) {
+      alert(`Please correct the email error: ${emailError}`);
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await axios.post("/contact", form);
 
@@ -101,8 +188,15 @@ const ContactUs = () => {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="contact-input"
+                className={`contact-input ${emailError ? "input-error" : ""}`}
               />
+              <div className="email-status-container">
+                {isVerifyingEmail && <FaSpinner className="spinner" />}
+                {emailError && <p className="error-message">{emailError}</p>}
+                {emailSuccessMessage && !emailError && (
+                  <p className="success-message">{emailSuccessMessage}</p>
+                )}
+              </div>
               <input
                 type="text"
                 name="subject"
@@ -124,9 +218,9 @@ const ContactUs = () => {
               <button
                 type="submit"
                 className="contact-submit-btn"
-                disabled={loading}
+                disabled={loading || isVerifyingEmail || !!emailError}
               >
-                {loading ? "Sending..." : "Send Message"}{" "}
+                {loading ? "Sending..." : "Send Message"}
               </button>
             </form>
           )}

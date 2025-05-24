@@ -18,6 +18,24 @@
   text-shadow: 0 2px 8px #c7d2fe;
   animation: fadeIn 0.7s;
 }
+
+/* Development Banner Styles */
+.dev-banner-homepage {
+  background-color: #fff3cd; /* Light yellow, similar to Bootstrap's warning */
+  color: #856404; /* Dark yellow text */
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-bottom: 1px solid #ffeeba; /* Light border */
+  width: 100%;
+  box-sizing: border-box;
+  position: fixed; /* Fixed position */
+  top: 80px; /* Below the main navbar */
+  left: 0;
+  z-index: 998; /* Below navbar dropdowns, but above most page content */
+}
+
 .homepage-feed {
   animation: fadeInUp 0.7s;
 }
@@ -42,7 +60,13 @@
 
 @media (max-width: 768px) {
   .homepage-outer {
-    padding-top: 6rem;
+    padding-top: 6rem; /* Adjusted to account for banner height if banner is taller on mobile */
+  }
+
+  .dev-banner-homepage {
+    top: 60px; /* Adjust if navbar height changes on mobile */
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
   }
 
   .homepage-inner {
