@@ -166,15 +166,12 @@ const Navbar = () => {
               >
                 <FaUser className="navbar-link-icon" /> Profile
               </Link>
-              <button onClick={handleLogout} className="navbar-btn-logout">
-                <FaSignOutAlt className="navbar-link-icon" /> Logout
-              </button>
               <Link
                 to="/notifications" // Or handle with dropdown logic similar to desktop
                 className="navbar-link-item"
                 onClick={() => {
                   closeMobileMenu();
-                  /* setShowNotifications(true); */
+                  setShowNotifications(true);
                 }}
               >
                 <FaBell className="navbar-link-icon" /> Notifications
@@ -184,6 +181,9 @@ const Navbar = () => {
                   </span>
                 )}
               </Link>
+              <button onClick={handleLogout} className="navbar-btn-logout">
+                <FaSignOutAlt className="navbar-link-icon" /> Logout
+              </button>
             </>
           ) : (
             <>

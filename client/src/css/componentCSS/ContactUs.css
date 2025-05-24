@@ -9,6 +9,7 @@
   box-sizing: border-box;
   font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
   perspective: 1000px;
+  overflow: hidden;
 }
 
 .contact-form-window {

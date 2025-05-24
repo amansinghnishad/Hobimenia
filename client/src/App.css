@@ -1,0 +1,26 @@
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content-area {
+  display: flex;
+  flex-grow: 1;
+}
+
+.content-scroll-area {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  margin-left: 100px;
+}
