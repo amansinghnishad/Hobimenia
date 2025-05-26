@@ -13,3 +13,23 @@ export const generateText = async (req, res) => {
     res.status(500).json({ msg: err.message || "Gemini API failed" });
   }
 };
+
+
+// ****************** Uncomment if using Sarvam AI ****************** //
+
+
+import { generateTextWithSarvam } from "../utils/sarvamAI.js";
+
+// export const generateText = async (req, res) => {
+//   try {
+//     const { prompt } = req.body;
+
+//     if (!prompt) return res.status(400).json({ msg: "Prompt is required" });
+
+//     const suggestion = await generateTextWithSarvam(prompt);
+//     res.json({ suggestion });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ msg: err.message || "Sarvam AI API failed" });
+//   }
+// };

@@ -141,7 +141,7 @@ const CreatePostPage = () => {
             {/* AI Helper Button - Pass current caption */}
             <div className="create-postpage-ai-helper">
               <AIHelperButton
-                currentCaption={caption} // Pass caption state
+                currentCaption={caption}
                 onSuggestionClick={(text) => setCaption(caption + text)}
               />
               {/* Add AI features notice */}

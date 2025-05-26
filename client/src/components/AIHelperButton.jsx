@@ -26,7 +26,7 @@ const AIHelperButton = ({ currentCaption, onSuggestionClick }) => {
     try {
       const res = await api.post(
         "/ai/generate",
-        { prompt: promptText }, // Send the dynamic prompt
+        { prompt: promptText },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const AIHelperButton = ({ currentCaption, onSuggestionClick }) => {
           }}
         >
           <div className="ai-helper-suggestion-title">
-            <span>💡</span> Suggestion{" "}
+            <span>💡</span> Suggestion
             {suggestion && !suggestion.startsWith("❌")
               ? "(click to use):"
               : ""}
