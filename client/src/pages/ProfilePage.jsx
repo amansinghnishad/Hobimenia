@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import api from "../api/axios";
 import { useAuth } from "../contexts/AuthContext";
-import Loader from "../components/Loader";
+import { Loader, Card, Button } from "../components/ui";
 import { toast } from "react-toastify";
-import "../css/pagesCSS/ProfilePage.css";
 
 import ProfileCoverPhoto from "../components/profile/ProfileCoverPhoto";
-import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileStats from "../components/profile/ProfileStats";
 import ProfileBioInterests from "../components/profile/ProfileBioInterests";
 import ProfilePostsGrid from "../components/profile/ProfilePostsGrid";
@@ -252,26 +251,37 @@ const ProfilePage = () => {
       fetchUserPosts();
     }
   }, [id, user?._id]);
-
   if (loadingProfile) {
     return (
-      <div className="page-loader-container">
-        <Loader />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader variant="spinner" />
       </div>
     );
   }
 
   if (!profile) {
     return (
-      <div className="profilepage-outer">
-        <p className="profilepage-not-found">User not found.</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="p-8 text-center max-w-md mx-auto">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            User not found
+          </h2>
+          <p className="text-gray-600">
+            The profile you're looking for doesn't exist or has been removed.
+          </p>
+        </Card>
       </div>
     );
   }
-
   return (
-    <>
-      <div className="profilepage-outer">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30"
+    >
+      {/* Cover Photo Section - Optimized for all screen sizes */}
+      <div className="relative">
         <ProfileCoverPhoto
           profile={profile}
           currentUser={user}
@@ -279,47 +289,150 @@ const ProfilePage = () => {
           onCoverPhotoClick={handleCoverPhotoClick}
           coverPhotoInputRef={coverPhotoInputRef}
           onCoverPhotoChange={handleCoverPhotoChange}
+          isFollowing={isFollowing}
+          onFollowToggle={handleFollowToggle}
+          followLoading={followLoading}
+          onEditProfile={handleEditProfile}
+          onProfilePicClick={handleProfilePicClick}
+          profilePicInputRef={profilePicInputRef}
+          onProfilePicChange={handleProfilePicChange}
+          isUploadingProfilePic={isUploadingProfilePic}
         />
 
-        <div className="profilepage-main-content">
-          <ProfileHeader
-            profile={profile}
-            currentUser={user}
-            isUploadingProfilePic={isUploadingProfilePic}
-            onProfilePicClick={handleProfilePicClick}
-            profilePicInputRef={profilePicInputRef}
-            onProfilePicChange={handleProfilePicChange}
-            isEditingProfile={isEditingProfile}
-            onEditProfile={handleEditProfile}
-            isFollowing={isFollowing}
-            onFollowToggle={handleFollowToggle}
-            followLoading={followLoading}
-          />
+        {/* Hidden file inputs */}
+        <input
+          type="file"
+          ref={profilePicInputRef}
+          onChange={handleProfilePicChange}
+          accept="image/*"
+          className="hidden"
+          disabled={isUploadingProfilePic}
+        />
+        <input
+          type="file"
+          ref={coverPhotoInputRef}
+          onChange={handleCoverPhotoChange}
+          accept="image/*"
+          className="hidden"
+          disabled={isUploadingCoverPhoto}
+        />
+      </div>{" "}
+      {/* Main Content Container - Responsive layout optimization */}
+      <div className="relative z-10">
+        {/* Mobile-first responsive container */}
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
+          {/* Desktop Layout: Full-width stats, then side-by-side bio and posts */}
+          <div className="hidden lg:block pt-8 pb-12 space-y-6">
+            {/* Stats Section - Full Width */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <ProfileStats
+                profile={profile}
+                postsCountFromParent={posts.length}
+              />
+            </motion.div>
 
-          <ProfileStats profile={profile} postsCountFromParent={posts.length} />
+            {/* Bio/Interests and Posts - Side by side */}
+            <div className="grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {/* Left Sidebar - Bio and Interests (Desktop) */}
+              <div className="lg:col-span-1 xl:col-span-1">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <ProfileBioInterests
+                    profile={profile}
+                    currentUser={user}
+                    isEditingProfile={isEditingProfile}
+                    tempBio={tempBio}
+                    setTempBio={setTempBio}
+                    tempInterests={tempInterests}
+                    setTempInterests={setTempInterests}
+                    onSaveProfile={handleSaveProfile}
+                    onCancelEdit={handleCancelEdit}
+                    onEditProfile={handleEditProfile}
+                  />
+                </motion.div>
+              </div>
 
-          <ProfileBioInterests
-            profile={profile}
-            currentUser={user}
-            isEditingProfile={isEditingProfile}
-            tempBio={tempBio}
-            setTempBio={setTempBio}
-            tempInterests={tempInterests}
-            setTempInterests={setTempInterests}
-            onSaveProfile={handleSaveProfile}
-            onCancelEdit={handleCancelEdit}
-            onEditProfile={handleEditProfile}
-          />
+              {/* Right Main Content - Posts (Desktop) */}
+              <div className="lg:col-span-2 xl:col-span-3">
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                  <ProfilePostsGrid
+                    username={profile.username}
+                    posts={posts}
+                    loadingPosts={loadingPosts}
+                    onPostDeleted={handlePostDeleted}
+                  />
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile & Tablet Layout: Stacked */}
+          <div className="lg:hidden space-y-4 sm:space-y-6 pt-6 sm:pt-8 pb-8 sm:pb-12">
+            {/* Stats Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="px-1 sm:px-0"
+            >
+              <ProfileStats
+                profile={profile}
+                postsCountFromParent={posts.length}
+              />
+            </motion.div>
+
+            {/* Bio & Interests Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="px-1 sm:px-0"
+            >
+              <ProfileBioInterests
+                profile={profile}
+                currentUser={user}
+                isEditingProfile={isEditingProfile}
+                tempBio={tempBio}
+                setTempBio={setTempBio}
+                tempInterests={tempInterests}
+                setTempInterests={setTempInterests}
+                onSaveProfile={handleSaveProfile}
+                onCancelEdit={handleCancelEdit}
+                onEditProfile={handleEditProfile}
+              />
+            </motion.div>
+
+            {/* Posts Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="px-1 sm:px-0"
+            >
+              <ProfilePostsGrid
+                username={profile.username}
+                posts={posts}
+                loadingPosts={loadingPosts}
+                onPostDeleted={handlePostDeleted}
+              />
+            </motion.div>
+          </div>
         </div>
-
-        <ProfilePostsGrid
-          username={profile.username}
-          posts={posts}
-          loadingPosts={loadingPosts}
-          onPostDeleted={handlePostDeleted}
-        />
       </div>
-    </>
+      {/* Bottom padding for mobile navigation */}
+      <div className="h-20 sm:h-0" />
+    </motion.div>
   );
 };
 

@@ -13,3 +13,5 @@ export const generateText = async (req, res) => {
     res.status(500).json({ msg: err.message || "Gemini API failed" });
   }
 };
+
+

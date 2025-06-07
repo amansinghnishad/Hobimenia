@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
-import "../css/componentCSS/ContactUs.css";
+import { motion, AnimatePresence } from "framer-motion";
 import axios from "../api/axios";
-import { FaSpinner } from "react-icons/fa";
+import {
+  FaSpinner,
+  FaEnvelope,
+  FaUser,
+  FaTag,
+  FaComments,
+  FaCheckCircle,
+  FaPaperPlane,
+  FaExclamationCircle,
+} from "react-icons/fa";
 
 const ContactUs = () => {
   const [form, setForm] = useState({
@@ -38,7 +47,6 @@ const ContactUs = () => {
     }
     return () => clearTimeout(timer);
   }, [submitted]);
-
   // Debounce execution
   const debounce = (func, delay) => {
     let timeoutId;
@@ -156,76 +164,243 @@ const ContactUs = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  };
+
   return (
-    <div className="contact-page-container fade-in-section">
-      <div className="contact-form-window">
-        <div className="contact-form-header">
-          <span className="contact-form-dot red-dot"></span>
-          <span className="contact-form-dot yellow-dot"></span>
-          <span className="contact-form-dot green-dot"></span>
-          <span className="contact-form-title-text">Contact Us</span>
-        </div>
-        <div className="contact-form-content">
-          {submitted ? (
-            <p className="contact-submission-message">
-              Thank you for reaching out! We'll get back to you soon.
-            </p>
-          ) : (
-            <form onSubmit={handleSubmit} className="contact-form-body">
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={form.name}
-                onChange={handleChange}
-                required
-                className="contact-input"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className={`contact-input ${emailError ? "input-error" : ""}`}
-              />
-              <div className="email-status-container">
-                {isVerifyingEmail && <FaSpinner className="spinner" />}
-                {emailError && <p className="error-message">{emailError}</p>}
-                {emailSuccessMessage && !emailError && (
-                  <p className="success-message">{emailSuccessMessage}</p>
-                )}
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-12 px-4">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="max-w-2xl mx-auto"
+      >
+        {/* Header */}
+        <motion.div variants={itemVariants} className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+            Get In Touch
+          </h1>
+          <p className="text-gray-600 text-lg">
+            We'd love to hear from you. Send us a message and we'll respond as
+            soon as possible.
+          </p>
+        </motion.div>
+
+        {/* Contact Form Card */}
+        <motion.div
+          variants={itemVariants}
+          className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-purple-100 overflow-hidden"
+        >
+          {/* Card Header */}
+          <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6">
+            <div className="flex items-center space-x-3">
+              <div className="flex space-x-2">
+                <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div className="w-3 h-3 bg-green-400 rounded-full"></div>
               </div>
-              <input
-                type="text"
-                name="subject"
-                placeholder="Subject"
-                value={form.subject}
-                onChange={handleChange}
-                required
-                className="contact-input"
-              />
-              <textarea
-                name="message"
-                placeholder="Your Message"
-                value={form.message}
-                onChange={handleChange}
-                required
-                rows={isMobile ? 6 : 12}
-                className="contact-textarea"
-              />
-              <button
-                type="submit"
-                className="contact-submit-btn"
-                disabled={loading || isVerifyingEmail || !!emailError}
-              >
-                {loading ? "Sending..." : "Send Message"}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
+              <h2 className="text-white text-xl font-semibold flex items-center">
+                <FaEnvelope className="mr-2" />
+                Contact Form
+              </h2>
+            </div>
+          </div>
+
+          {/* Card Content */}
+          <div className="p-8">
+            <AnimatePresence mode="wait">
+              {submitted ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="text-center py-12"
+                >
+                  <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <FaCheckCircle className="text-3xl text-green-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                    Message Sent Successfully!
+                  </h3>
+                  <p className="text-gray-600 text-lg">
+                    Thank you for reaching out! We'll get back to you soon.
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                >
+                  {/* Name Field */}
+                  <motion.div variants={itemVariants}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <FaUser className="inline mr-2" />
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Enter your full name"
+                      value={form.name}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-gray-50/50"
+                    />
+                  </motion.div>
+
+                  {/* Email Field */}
+                  <motion.div variants={itemVariants}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <FaEnvelope className="inline mr-2" />
+                      Your Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter your email address"
+                      value={form.email}
+                      onChange={handleChange}
+                      required
+                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 ${
+                        emailError
+                          ? "border-red-300 bg-red-50/50"
+                          : "border-gray-200"
+                      }`}
+                    />
+                    <AnimatePresence>
+                      {(isVerifyingEmail ||
+                        emailError ||
+                        emailSuccessMessage) && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="mt-2"
+                        >
+                          {isVerifyingEmail && (
+                            <div className="flex items-center text-blue-600 text-sm">
+                              <FaSpinner className="animate-spin mr-2" />
+                              Verifying email...
+                            </div>
+                          )}
+                          {emailError && (
+                            <div className="flex items-center text-red-600 text-sm">
+                              <FaExclamationCircle className="mr-2" />
+                              {emailError}
+                            </div>
+                          )}
+                          {emailSuccessMessage && !emailError && (
+                            <div className="flex items-center text-green-600 text-sm">
+                              <FaCheckCircle className="mr-2" />
+                              {emailSuccessMessage}
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+
+                  {/* Subject Field */}
+                  <motion.div variants={itemVariants}>
+                    {" "}
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <FaTag className="inline mr-2" />
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      name="subject"
+                      placeholder="What's this about?"
+                      value={form.subject}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-gray-50/50"
+                    />
+                  </motion.div>
+
+                  {/* Message Field */}
+                  <motion.div variants={itemVariants}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <FaComments className="inline mr-2" />
+                      Your Message
+                    </label>
+                    <textarea
+                      name="message"
+                      placeholder="Tell us more about your inquiry..."
+                      value={form.message}
+                      onChange={handleChange}
+                      required
+                      rows={isMobile ? 6 : 8}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-gray-50/50 resize-none"
+                    />
+                  </motion.div>
+
+                  {/* Submit Button */}
+                  <motion.div variants={itemVariants}>
+                    <motion.button
+                      type="submit"
+                      disabled={loading || isVerifyingEmail || !!emailError}
+                      whileHover={{ scale: loading ? 1 : 1.02 }}
+                      whileTap={{ scale: loading ? 1 : 0.98 }}
+                      className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                        loading || isVerifyingEmail || !!emailError
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg hover:shadow-xl"
+                      }`}
+                    >
+                      {loading ? (
+                        <>
+                          <FaSpinner className="animate-spin" />
+                          <span>Sending...</span>
+                        </>
+                      ) : (
+                        <>
+                          <FaPaperPlane />
+                          <span>Send Message</span>
+                        </>
+                      )}
+                    </motion.button>
+                  </motion.div>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Additional Info */}
+        <motion.div
+          variants={itemVariants}
+          className="text-center mt-8 text-gray-600"
+        >
+          <p className="text-sm">
+            We typically respond within 24 hours. For urgent matters, please
+            include "URGENT" in your subject line.
+          </p>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
