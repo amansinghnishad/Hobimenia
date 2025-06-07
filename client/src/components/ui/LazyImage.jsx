@@ -47,8 +47,9 @@ const LazyImage = memo(
 
     return (
       <div ref={imgRef} className={`relative overflow-hidden ${className}`}>
+        {" "}
         {/* Placeholder */}
-        {!isLoaded && !hasError && (
+        {(!src || !src.trim() || (!isLoaded && !hasError)) && (
           <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
             {placeholder || (
               <svg
@@ -65,7 +66,6 @@ const LazyImage = memo(
             )}
           </div>
         )}
-
         {/* Error state */}
         {hasError && (
           <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
@@ -85,9 +85,7 @@ const LazyImage = memo(
             </div>
           </div>
         )}
-
-        {/* Actual image */}
-        {isInView && !hasError && (
+        {isInView && !hasError && src && src.trim() && (
           <motion.img
             src={src}
             alt={alt}

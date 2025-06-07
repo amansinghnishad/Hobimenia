@@ -5,7 +5,7 @@ import logger from "../config/logger.js"; // Import the logger
 
 // Generate JWT token
 const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -23,9 +23,7 @@ export const signup = async (req, res) => {
     }
 
     const user = await User.create({ username, email, password });
-    logger.info('User created successfully', { userId: user._id, email });
-
-    const token = generateToken(user._id);
+    logger.info('User created successfully', { userId: user._id, email }); const token = generateToken(user._id);
     res
       .cookie("token", token, {
         httpOnly: true,
@@ -34,7 +32,14 @@ export const signup = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .status(201)
-      .json({ _id: user._id, username: user.username, email: user.email });
+      .json({
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+        },
+        token,
+      });
   } catch (err) {
     // Replace console.error with logger.error
     logger.error('Signup failed', { error: err.message, stack: err.stack, email });

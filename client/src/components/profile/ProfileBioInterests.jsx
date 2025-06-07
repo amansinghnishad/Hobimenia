@@ -13,6 +13,7 @@ const ProfileBioInterests = ({
   setTempInterests,
   onSaveProfile,
   onCancelEdit,
+  onEditProfile,
 }) => {
   if (!profile) return null;
   const isOwnProfile = currentUser?._id === profile._id;
