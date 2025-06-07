@@ -1,4 +1,5 @@
 import Comment from '../models/Comment.js';
+import Post from '../models/Post.js';
 import mongoose from 'mongoose'; // Import mongoose
 
 export const createComment = async (req, res) => {
@@ -10,6 +11,12 @@ export const createComment = async (req, res) => {
       author: req.user._id,
     });
     await comment.populate('author', 'username');
+
+    // Add comment to post's comments array
+    await Post.findByIdAndUpdate(postId, {
+      $push: { comments: comment._id }
+    });
+
     res.status(201).json(comment);
   } catch (err) {
     res.status(500).json({ error: 'Comment creation failed' });
@@ -35,7 +42,6 @@ export const deleteComment = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(commentId)) {
     return res.status(400).json({ message: "Invalid Comment ID format" });
   }
-
   try {
     const comment = await Comment.findById(commentId);
 
@@ -47,6 +53,11 @@ export const deleteComment = async (req, res) => {
     if (comment.author.toString() !== userId.toString()) {
       return res.status(403).json({ message: "Unauthorized: You can only delete your own comments" });
     }
+
+    // Remove comment from post's comments array
+    await Post.findByIdAndUpdate(comment.postId, {
+      $pull: { comments: commentId }
+    });
 
     await comment.deleteOne(); // Use deleteOne() on the document
 

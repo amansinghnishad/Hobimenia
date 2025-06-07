@@ -161,7 +161,9 @@ export const getPostById = async (req, res) => {
   }
 
   try {
-    const post = await Post.findById(postId).populate("author", "username profilePic");
+    const post = await Post.findById(postId)
+      .populate("author", "username profilePic")
+      .populate("comments");
     if (!post) {
       logger.warn('Get post by ID failed - Post not found', { postId });
       return res.status(404).json({ message: "Post not found" });
@@ -181,10 +183,10 @@ export const getAllPosts = async (req, res) => {
     const filter = {};
     if (category) {
       filter.category = category;
-    }
-    const posts = await Post.find(filter)
+    } const posts = await Post.find(filter)
       .sort({ createdAt: -1 })
-      .populate("author", "username profilePic");
+      .populate("author", "username profilePic")
+      .populate("comments");
     logger.info(`Fetched all posts successfully. Count: ${posts.length}`, { category });
     res.json(posts);
   } catch (err) {
@@ -207,10 +209,10 @@ export const getPostsByUser = async (req, res) => {
     const filter = { author: userId };
     if (category) {
       filter.category = category;
-    }
-    const posts = await Post.find(filter)
+    } const posts = await Post.find(filter)
       .sort({ createdAt: -1 })
-      .populate("author", "username profilePic");
+      .populate("author", "username profilePic")
+      .populate("comments");
     logger.info(`Fetched posts for user successfully. User ID: ${userId}, Count: ${posts.length}`, { category });
     res.status(200).json(posts);
   } catch (err) {
