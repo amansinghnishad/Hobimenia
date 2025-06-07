@@ -24,7 +24,7 @@ const ProfileCoverPhoto = ({
   const isOwnProfile = currentUser?._id === profile._id;
   return (
     <motion.div
-      className="relative h-64 sm:h-72 md:h-80 lg:h-96 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 mb-8"
+      className="relative h-48 xs:h-56 sm:h-64 md:h-72 lg:h-80 xl:h-96 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 mb-4 sm:mb-6 lg:mb-8"
       initial={{ opacity: 0, scale: 1.02 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -47,9 +47,9 @@ const ProfileCoverPhoto = ({
       />
       {/* Dark Overlay for Better Text Readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40" />
-      {/* Action Buttons - Top Right */}
-      <div className="absolute top-6 right-6 z-20 flex items-center space-x-3">
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40" />{" "}
+      {/* Action Buttons - Responsive positioning */}
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-6 lg:right-6 z-20 flex items-center space-x-2 sm:space-x-3">
         {/* Cover Photo Edit Button */}
         {isOwnProfile && (
           <motion.div
@@ -60,17 +60,18 @@ const ProfileCoverPhoto = ({
             <Button
               onClick={onCoverPhotoClick}
               disabled={isUploadingCoverPhoto}
-              className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:border-white/30 transition-all duration-300 px-4 py-2 text-sm font-medium rounded-full shadow-lg"
+              className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:border-white/30 transition-all duration-300 px-2 py-1.5 sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium rounded-full shadow-lg min-h-[32px] sm:min-h-[36px] lg:min-h-[40px]"
             >
               {isUploadingCoverPhoto ? (
                 <>
-                  <Loader size="sm" className="mr-2" />
-                  Uploading...
+                  <Loader size="sm" className="mr-1 sm:mr-2" />
+                  <span className="hidden xs:inline">Uploading...</span>
                 </>
               ) : (
                 <>
-                  <FaCamera className="w-4 h-4 mr-2" />
-                  Edit Cover
+                  <FaCamera className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden xs:inline">Edit Cover</span>
+                  <span className="xs:hidden">Edit</span>
                 </>
               )}
             </Button>
@@ -87,7 +88,7 @@ const ProfileCoverPhoto = ({
             <Button
               onClick={onFollowToggle}
               disabled={followLoading}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-300 backdrop-blur-md border ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 lg:px-6 lg:py-2 rounded-full font-medium transition-all duration-300 backdrop-blur-md border text-xs sm:text-sm min-h-[32px] sm:min-h-[36px] lg:min-h-[40px] ${
                 isFollowing
                   ? "bg-white/20 border-white/30 text-white hover:bg-red-500/80 hover:border-red-400"
                   : "bg-blue-500/80 border-blue-400 text-white hover:bg-blue-600/80"
@@ -97,13 +98,15 @@ const ProfileCoverPhoto = ({
                 <Loader size="sm" />
               ) : isFollowing ? (
                 <>
-                  <FaUserCheck className="w-4 h-4 mr-2" />
-                  Following
+                  <FaUserCheck className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden xs:inline">Following</span>
+                  <span className="xs:hidden">✓</span>
                 </>
               ) : (
                 <>
-                  <FaUserPlus className="w-4 h-4 mr-2" />
-                  Follow
+                  <FaUserPlus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden xs:inline">Follow</span>
+                  <span className="xs:hidden">+</span>
                 </>
               )}
             </Button>
@@ -116,10 +119,11 @@ const ProfileCoverPhoto = ({
           >
             <Button
               onClick={onEditProfile}
-              className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:border-white/30 transition-all duration-300 px-6 py-2 font-medium rounded-full shadow-lg"
+              className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 hover:border-white/30 transition-all duration-300 px-3 py-1.5 sm:px-4 sm:py-2 lg:px-6 lg:py-2 font-medium rounded-full shadow-lg text-xs sm:text-sm min-h-[32px] sm:min-h-[36px] lg:min-h-[40px]"
             >
-              <FaEdit className="w-4 h-4 mr-2" />
-              Edit Profile
+              <FaEdit className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden xs:inline">Edit Profile</span>
+              <span className="xs:hidden">Edit</span>
             </Button>
           </motion.div>
         )}

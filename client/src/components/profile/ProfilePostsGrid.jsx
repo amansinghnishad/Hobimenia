@@ -13,11 +13,12 @@ const ProfilePostsGrid = ({ username, posts, loadingPosts, onPostDeleted }) => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);return (
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return (
     <motion.div
-      className="space-y-4 sm:space-y-6 mx-2 sm:mx-4 lg:mx-0"
+      className="space-y-4 sm:space-y-6 mx-1 sm:mx-2 lg:mx-0"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 1 }}
@@ -36,7 +37,8 @@ const ProfilePostsGrid = ({ username, posts, loadingPosts, onPostDeleted }) => {
           </p>
         </div>
       </div>
-      {/* Content */}{" "}      {loadingPosts ? (
+      {/* Content */}{" "}
+      {loadingPosts ? (
         <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
           <div className="flex-1 space-y-1 sm:space-y-2">
             {[...Array(isMobile ? 6 : 3)].map((_, i) => (
@@ -74,16 +76,19 @@ const ProfilePostsGrid = ({ username, posts, loadingPosts, onPostDeleted }) => {
               ))}
             </div>
           )}
-        </div>) : posts.length > 0 ? (
+        </div>
+      ) : posts.length > 0 ? (
         <motion.div
           className="flex flex-col sm:flex-row gap-1 sm:gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-        >          {/* Left Column */}
+        >
+          {" "}
+          {/* Left Column */}
           <div className="flex-1 space-y-1 sm:space-y-2">
             {posts
-              .filter((_, index) => isMobile ? true : index % 2 === 0)
+              .filter((_, index) => (isMobile ? true : index % 2 === 0))
               .map((post, index) => (
                 <motion.div
                   key={post._id}
@@ -102,7 +107,8 @@ const ProfilePostsGrid = ({ username, posts, loadingPosts, onPostDeleted }) => {
                   </div>
                 </motion.div>
               ))}
-          </div>          {/* Right Column - Hidden on mobile */}
+          </div>{" "}
+          {/* Right Column - Hidden on mobile */}
           {!isMobile && (
             <div className="flex-1 space-y-1 sm:space-y-2">
               {posts
@@ -127,7 +133,8 @@ const ProfilePostsGrid = ({ username, posts, loadingPosts, onPostDeleted }) => {
                 ))}
             </div>
           )}
-        </motion.div>      ) : (
+        </motion.div>
+      ) : (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}

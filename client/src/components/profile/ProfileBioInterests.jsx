@@ -23,52 +23,55 @@ const ProfileBioInterests = ({
       transition={{ duration: 0.5 }}
       className="mx-2 sm:mx-0"
     >
-      <Card className="p-4 sm:p-6 space-y-6">
+      <Card className="p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="flex items-center gap-2 mb-4">
           <FaEdit className="text-blue-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Edit Profile</h3>
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+            Edit Profile
+          </h3>
         </div>
-
-        {/* Bio Section */}
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-            <FaQuoteLeft className="text-gray-400" />
-            Bio (Max 250 characters)
-          </label>
-          <div className="relative">
-            <textarea
-              value={tempBio}
-              onChange={(e) => setTempBio(e.target.value)}
-              placeholder="Tell us about yourself..."
-              maxLength={250}
-              rows={4}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200 bg-gray-50 focus:bg-white"
-            />
-            <div className="absolute bottom-2 right-2 text-xs text-gray-400">
-              {tempBio.length}/250
+        {/* Bio and Interests in Responsive Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Bio Section */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <FaQuoteLeft className="text-gray-400" />
+              Bio (Max 250 characters)
+            </label>
+            <div className="relative">
+              <textarea
+                value={tempBio}
+                onChange={(e) => setTempBio(e.target.value)}
+                placeholder="Tell us about yourself..."
+                maxLength={250}
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200 bg-gray-50 focus:bg-white text-sm sm:text-base"
+              />
+              <div className="absolute bottom-2 right-2 text-xs text-gray-400">
+                {tempBio.length}/250
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Interests Section */}
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-            <FaTag className="text-gray-400" />
-            Interests (comma-separated)
-          </label>
-          <Input
-            value={tempInterests}
-            onChange={(e) => setTempInterests(e.target.value)}
-            placeholder="e.g., Photography, Gaming, Tech"
-            className="bg-gray-50 focus:bg-white"
-          />
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-3 pt-4">
+          {/* Interests Section */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <FaTag className="text-gray-400" />
+              Interests (comma-separated)
+            </label>
+            <Input
+              value={tempInterests}
+              onChange={(e) => setTempInterests(e.target.value)}
+              placeholder="e.g., Photography, Gaming, Tech"
+              className="bg-gray-50 focus:bg-white"
+            />
+          </div>
+        </div>{" "}
+        {/* Action Buttons - Responsive layout */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
           <Button
             onClick={onSaveProfile}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 w-full sm:w-auto"
           >
             <FaSave className="w-4 h-4 mr-2" />
             Save Changes
@@ -76,70 +79,80 @@ const ProfileBioInterests = ({
           <Button
             onClick={onCancelEdit}
             variant="outline"
-            className="hover:bg-gray-50"
+            className="hover:bg-gray-50 w-full sm:w-auto"
           >
             <FaTimes className="w-4 h-4 mr-2" />
             Cancel
           </Button>
         </div>
-      </Card>{" "}
+      </Card>
     </motion.div>
   ) : (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.8 }}
-      className="mx-4 sm:mx-0"
+      className="mx-2 sm:mx-0"
     >
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 overflow-hidden">
-        {/* Bio Section */}
-        {profile.bio && (
-          <motion.div
-            className="p-6 border-b border-gray-100/50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.9 }}
-          >
-            <div className="flex items-start gap-3 mb-3">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 mt-2 flex-shrink-0" />
-              <h3 className="text-lg font-semibold text-gray-900">About</h3>
-            </div>
-            <div className="relative">
-              <FaQuoteLeft className="absolute -top-2 -left-2 text-blue-200 text-lg" />
-              <p className="text-gray-700 leading-relaxed pl-4 italic text-base">
-                "{profile.bio}"
-              </p>
-            </div>
-          </motion.div>
-        )}
+      <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-sm border border-gray-100/50 overflow-hidden">
+        {/* Bio and Interests - Responsive Layout */}
+        {(profile.bio ||
+          (profile.interests && profile.interests.length > 0)) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 p-4 sm:p-6">
+            {/* Bio Section */}
+            {profile.bio && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.9 }}
+                className="order-1"
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 mt-2 flex-shrink-0" />
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                    About
+                  </h3>
+                </div>
+                <div className="relative">
+                  <FaQuoteLeft className="absolute -top-2 -left-2 text-blue-200 text-base sm:text-lg" />
+                  <p className="text-gray-700 leading-relaxed pl-4 italic text-sm sm:text-base">
+                    "{profile.bio}"
+                  </p>
+                </div>
+              </motion.div>
+            )}
 
-        {/* Interests Section */}
-        {profile.interests && profile.interests.length > 0 && (
-          <motion.div
-            className="p-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 1 }}
-          >
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-green-500 to-blue-500 mt-2 flex-shrink-0" />
-              <h3 className="text-lg font-semibold text-gray-900">Interests</h3>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {profile.interests.map((interest, index) => (
-                <motion.span
-                  key={index}
-                  className="px-3 py-1.5 bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 rounded-full text-sm font-medium border border-blue-100 hover:shadow-sm transition-all duration-200"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: 1.1 + index * 0.05 }}
-                  whileHover={{ scale: 1.05, y: -1 }}
-                >
-                  #{interest.trim()}
-                </motion.span>
-              ))}
-            </div>
-          </motion.div>
+            {/* Interests Section */}
+            {profile.interests && profile.interests.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1 }}
+                className="order-2"
+              >
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-green-500 to-blue-500 mt-2 flex-shrink-0" />
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                    Interests
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {profile.interests.map((interest, index) => (
+                    <motion.span
+                      key={index}
+                      className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 rounded-full text-xs sm:text-sm font-medium border border-blue-100 hover:shadow-sm transition-all duration-200"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: 1.1 + index * 0.05 }}
+                      whileHover={{ scale: 1.05, y: -1 }}
+                    >
+                      #{interest.trim()}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </div>
         )}
 
         {/* Empty State */}

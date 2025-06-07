@@ -29,28 +29,6 @@ const HomePage = () => {
 
       {/* Main Content */}
       <div className="max-w-2xl mx-auto px-4 py-6 pb-24">
-        {/* Welcome Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-8 text-center"
-        >
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <FaHome className="text-white text-lg" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent">
-                Welcome to Hobimenia
-              </h1>
-            </div>
-          </div>
-          <p className="text-gray-600 text-lg font-medium max-w-md mx-auto">
-            Discover amazing content from our creative community
-          </p>
-        </motion.div>
-
         {/* Post Feed */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
