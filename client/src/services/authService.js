@@ -6,9 +6,18 @@ export const signup = async (data) => {
   return res.data;
 };
 
-
 export const login = async (data) => {
   const res = await api.post("/auth/login", data);
+  return res.data;
+};
+
+export const forgotPassword = async (data) => {
+  const res = await api.post("/auth/forgot-password", data);
+  return res.data;
+};
+
+export const resetPassword = async (token, password) => {
+  const res = await api.post(`/auth/reset-password/${token}`, { password });
   return res.data;
 };
 

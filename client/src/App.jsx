@@ -20,6 +20,8 @@ const PostDetailPage = lazy(() => import("./pages/PostDetailPage"));
 const HeroPage = lazy(() => import("./pages/HeroPage"));
 const EditPostPage = lazy(() => import("./pages/EditPostPage"));
 const NotificationsList = lazy(() => import("./components/NotificationsList"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 
 // Loading component for Suspense fallback
 const PageLoader = () => (
@@ -87,6 +89,14 @@ const App = () => {
                   <Route path="/" element={<HeroPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/signup" element={<SignupPage />} />
+                  <Route
+                    path="/forgot-password"
+                    element={<ForgotPasswordPage />}
+                  />
+                  <Route
+                    path="/reset-password/:token"
+                    element={<ResetPasswordPage />}
+                  />
 
                   <Route
                     path="/notifications"

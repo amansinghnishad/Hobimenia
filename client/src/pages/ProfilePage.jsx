@@ -1,278 +1,49 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
 import { motion } from "framer-motion";
-import api from "../api/axios";
-import { useAuth } from "../contexts/AuthContext";
-import { Loader, Card, Button } from "../components/ui";
-import { toast } from "react-toastify";
-
+import { useProfile } from "../hooks/useProfile";
 import ProfileCoverPhoto from "../components/profile/ProfileCoverPhoto";
-import ProfileStats from "../components/profile/ProfileStats";
-import ProfileBioInterests from "../components/profile/ProfileBioInterests";
-import ProfilePostsGrid from "../components/profile/ProfilePostsGrid";
+import ProfileDesktopLayout from "../components/profile/ProfileDesktopLayout";
+import ProfileMobileLayout from "../components/profile/ProfileMobileLayout";
+import ProfilePageLoader from "../components/profile/ProfilePageLoader";
+import ProfileNotFound from "../components/profile/ProfileNotFound";
 
 const ProfilePage = () => {
-  const { id } = useParams();
-  const { user, token, login: loginContext } = useAuth();
+  const {
+    user,
+    profile,
+    posts,
+    loadingProfile,
+    loadingPosts,
+    isUploadingProfilePic,
+    profilePicInputRef,
+    isUploadingCoverPhoto,
+    coverPhotoInputRef,
+    isEditingProfile,
+    tempBio,
+    setTempBio,
+    tempInterests,
+    setTempInterests,
+    isFollowing,
+    followLoading,
+    handlePostDeleted,
+    handleProfilePicClick,
+    handleProfilePicChange,
+    handleCoverPhotoClick,
+    handleCoverPhotoChange,
+    handleEditProfile,
+    handleCancelEdit,
+    handleSaveProfile,
+    handleFollowToggle,
+  } = useProfile();
 
-  const [profile, setProfile] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [loadingPosts, setLoadingPosts] = useState(true);
-
-  const [isUploadingProfilePic, setIsUploadingProfilePic] = useState(false);
-  const profilePicInputRef = useRef(null);
-
-  const [isUploadingCoverPhoto, setIsUploadingCoverPhoto] = useState(false);
-  const coverPhotoInputRef = useRef(null);
-
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [tempBio, setTempBio] = useState("");
-  const [tempInterests, setTempInterests] = useState("");
-
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [followLoading, setFollowLoading] = useState(false);
-
-  const fetchProfile = async () => {
-    setLoadingProfile(true);
-    try {
-      const res = await api.get(`/users/${id}`);
-      const profileData = res.data;
-      setProfile(profileData);
-
-      if (
-        user &&
-        profileData.followers &&
-        profileData.followers.some((followerId) => followerId === user._id)
-      ) {
-        setIsFollowing(true);
-      } else {
-        setIsFollowing(false);
-      }
-    } catch (err) {
-      console.error("Failed to load profile", err);
-      toast.error(err.response?.data?.message || "Failed to load profile.");
-      setProfile(null);
-    } finally {
-      setLoadingProfile(false);
-    }
-  };
-
-  const fetchUserPosts = async () => {
-    setLoadingPosts(true);
-    try {
-      const res = await api.get(`/posts/user/${id}`);
-      setPosts(res.data);
-    } catch (err) {
-      console.error("Failed to load posts", err);
-      setPosts([]);
-    } finally {
-      setLoadingPosts(false);
-    }
-  };
-
-  const handlePostDeleted = (deletedPostId) => {
-    setPosts((prevPosts) =>
-      prevPosts.filter((post) => post._id !== deletedPostId)
-    );
-    // Optionally, update profile.postsCount if it's being strictly managed
-    if (profile && profile.postsCount !== undefined) {
-      setProfile((prev) => ({
-        ...prev,
-        postsCount: Math.max(0, prev.postsCount - 1),
-      }));
-    }
-  };
-
-  const handleProfilePicClick = () => {
-    if (user?._id === profile?._id && profilePicInputRef.current) {
-      profilePicInputRef.current.click();
-    }
-  };
-
-  const handleProfilePicChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (user?._id !== profile._id) return;
-
-    const formData = new FormData();
-    formData.append("profilePic", file);
-    setIsUploadingProfilePic(true);
-    try {
-      const res = await api.patch("/users/profile-pic", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setProfile((prev) => ({ ...prev, profilePic: res.data.profilePic }));
-      if (user._id === res.data._id) {
-        loginContext({ ...user, profilePic: res.data.profilePic }, token);
-      }
-      toast.success("Profile picture updated!");
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Profile picture upload failed"
-      );
-    } finally {
-      setIsUploadingProfilePic(false);
-      if (profilePicInputRef.current) profilePicInputRef.current.value = "";
-    }
-  };
-
-  const handleCoverPhotoClick = () => {
-    if (user?._id === profile?._id && coverPhotoInputRef.current) {
-      coverPhotoInputRef.current.click();
-    }
-  };
-
-  const handleCoverPhotoChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (user?._id !== profile?._id) return;
-
-    const formData = new FormData();
-    formData.append("coverPhoto", file);
-    setIsUploadingCoverPhoto(true);
-    try {
-      const res = await api.patch("/users/cover-photo", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setProfile((prev) => ({ ...prev, coverPhoto: res.data.coverPhoto }));
-      if (user._id === res.data._id) {
-        loginContext({ ...user, coverPhoto: res.data.coverPhoto }, token);
-      }
-      toast.success("Cover photo updated!");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Cover photo upload failed");
-    } finally {
-      setIsUploadingCoverPhoto(false);
-      if (coverPhotoInputRef.current) coverPhotoInputRef.current.value = "";
-    }
-  };
-
-  const handleEditProfile = () => {
-    setTempBio(profile.bio || "");
-    setTempInterests((profile.interests || []).join(", "));
-    setIsEditingProfile(true);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditingProfile(false);
-  };
-
-  const handleSaveProfile = async () => {
-    const interestsArray = tempInterests
-      .split(",")
-      .map((i) => i.trim())
-      .filter((i) => i !== "");
-    const payload = {
-      bio: tempBio,
-      interests: interestsArray,
-    };
-    try {
-      const res = await api.put("/users/profile", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // The response from PUT /users/profile should be the complete updated user object
-      setProfile(res.data);
-
-      if (user._id === res.data._id) {
-        loginContext(
-          { ...user, bio: res.data.bio, interests: res.data.interests },
-          token
-        );
-      }
-      setIsEditingProfile(false);
-      toast.success("Profile updated!");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to update profile.");
-    }
-  };
-
-  const handleFollowToggle = async () => {
-    if (!user) {
-      toast.info("Please login to follow users.");
-      return;
-    }
-    if (user._id === profile._id) {
-      toast.info("You cannot follow yourself.");
-      return;
-    }
-
-    setFollowLoading(true);
-    const action = isFollowing ? "unfollow" : "follow";
-    try {
-      const res = isFollowing
-        ? await api.delete(`/users/${profile._id}/unfollow`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-        : await api.post(
-            `/users/${profile._id}/follow`,
-            {},
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-
-      // Update profile state with the targetUser data returned from the backend
-      setProfile(res.data.targetUser);
-      // Update the isFollowing state based on the new followers list of the targetUser
-      setIsFollowing(res.data.targetUser.followers.includes(user._id));
-
-      // Update the logged-in user's context if their following list changed
-      if (res.data.currentUser) {
-        loginContext(res.data.currentUser, token);
-      }
-
-      toast.success(
-        `${action === "follow" ? "Followed" : "Unfollowed"} @${
-          res.data.targetUser.username
-        }`
-      );
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-          `Failed to ${action} @${profile.username}.`
-      );
-      // Optionally, re-fetch profile to ensure UI consistency on error
-      // fetchProfile();
-    } finally {
-      setFollowLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (id) {
-      fetchProfile();
-      fetchUserPosts();
-    }
-  }, [id, user?._id]);
   if (loadingProfile) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader variant="spinner" />
-      </div>
-    );
+    return <ProfilePageLoader />;
   }
 
   if (!profile) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="p-8 text-center max-w-md mx-auto">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            User not found
-          </h2>
-          <p className="text-gray-600">
-            The profile you're looking for doesn't exist or has been removed.
-          </p>
-        </Card>
-      </div>
-    );
+    return <ProfileNotFound />;
   }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -280,7 +51,6 @@ const ProfilePage = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30"
     >
-      {/* Cover Photo Section - Optimized for all screen sizes */}
       <div className="relative">
         <ProfileCoverPhoto
           profile={profile}
@@ -298,8 +68,6 @@ const ProfilePage = () => {
           onProfilePicChange={handleProfilePicChange}
           isUploadingProfilePic={isUploadingProfilePic}
         />
-
-        {/* Hidden file inputs */}
         <input
           type="file"
           ref={profilePicInputRef}
@@ -316,121 +84,41 @@ const ProfilePage = () => {
           className="hidden"
           disabled={isUploadingCoverPhoto}
         />
-      </div>{" "}
-      {/* Main Content Container - Responsive layout optimization */}
+      </div>
       <div className="relative z-10">
-        {/* Mobile-first responsive container */}
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
-          {/* Desktop Layout: Full-width stats, then side-by-side bio and posts */}
-          <div className="hidden lg:block pt-8 pb-12 space-y-6">
-            {/* Stats Section - Full Width */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <ProfileStats
-                profile={profile}
-                postsCountFromParent={posts.length}
-              />
-            </motion.div>
-
-            {/* Bio/Interests and Posts - Side by side */}
-            <div className="grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {/* Left Sidebar - Bio and Interests (Desktop) */}
-              <div className="lg:col-span-1 xl:col-span-1">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                >
-                  <ProfileBioInterests
-                    profile={profile}
-                    currentUser={user}
-                    isEditingProfile={isEditingProfile}
-                    tempBio={tempBio}
-                    setTempBio={setTempBio}
-                    tempInterests={tempInterests}
-                    setTempInterests={setTempInterests}
-                    onSaveProfile={handleSaveProfile}
-                    onCancelEdit={handleCancelEdit}
-                    onEditProfile={handleEditProfile}
-                  />
-                </motion.div>
-              </div>
-
-              {/* Right Main Content - Posts (Desktop) */}
-              <div className="lg:col-span-2 xl:col-span-3">
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
-                  <ProfilePostsGrid
-                    username={profile.username}
-                    posts={posts}
-                    loadingPosts={loadingPosts}
-                    onPostDeleted={handlePostDeleted}
-                  />
-                </motion.div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile & Tablet Layout: Stacked */}
-          <div className="lg:hidden space-y-4 sm:space-y-6 pt-6 sm:pt-8 pb-8 sm:pb-12">
-            {/* Stats Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="px-1 sm:px-0"
-            >
-              <ProfileStats
-                profile={profile}
-                postsCountFromParent={posts.length}
-              />
-            </motion.div>
-
-            {/* Bio & Interests Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="px-1 sm:px-0"
-            >
-              <ProfileBioInterests
-                profile={profile}
-                currentUser={user}
-                isEditingProfile={isEditingProfile}
-                tempBio={tempBio}
-                setTempBio={setTempBio}
-                tempInterests={tempInterests}
-                setTempInterests={setTempInterests}
-                onSaveProfile={handleSaveProfile}
-                onCancelEdit={handleCancelEdit}
-                onEditProfile={handleEditProfile}
-              />
-            </motion.div>
-
-            {/* Posts Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="px-1 sm:px-0"
-            >
-              <ProfilePostsGrid
-                username={profile.username}
-                posts={posts}
-                loadingPosts={loadingPosts}
-                onPostDeleted={handlePostDeleted}
-              />
-            </motion.div>
-          </div>
+          <ProfileDesktopLayout
+            profile={profile}
+            posts={posts}
+            loadingPosts={loadingPosts}
+            onPostDeleted={handlePostDeleted}
+            currentUser={user}
+            isEditingProfile={isEditingProfile}
+            tempBio={tempBio}
+            setTempBio={setTempBio}
+            tempInterests={tempInterests}
+            setTempInterests={setTempInterests}
+            onSaveProfile={handleSaveProfile}
+            onCancelEdit={handleCancelEdit}
+            onEditProfile={handleEditProfile}
+          />
+          <ProfileMobileLayout
+            profile={profile}
+            posts={posts}
+            loadingPosts={loadingPosts}
+            onPostDeleted={handlePostDeleted}
+            currentUser={user}
+            isEditingProfile={isEditingProfile}
+            tempBio={tempBio}
+            setTempBio={setTempBio}
+            tempInterests={tempInterests}
+            setTempInterests={setTempInterests}
+            onSaveProfile={handleSaveProfile}
+            onCancelEdit={handleCancelEdit}
+            onEditProfile={handleEditProfile}
+          />
         </div>
       </div>
-      {/* Bottom padding for mobile navigation */}
       <div className="h-20 sm:h-0" />
     </motion.div>
   );
