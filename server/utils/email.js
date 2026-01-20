@@ -1,28 +1,30 @@
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 import logger from "../config/logger.js";
 
-const sendEmail = async (options) => {
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+// Ensure SENDGRID_API_KEY is set when this module is loaded
+if (!process.env.SENDGRID_API_KEY) {
+  logger.error("CRITICAL: SENDGRID_API_KEY is not defined in environment variables. Emails will not be sent.");
+} else {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
-  const mailOptions = {
-    from: `Hobimenia <${process.env.EMAIL_FROM}>`,
+const sendEmail = async (options) => {
+  const msg = {
     to: options.email,
+    from: process.env.EMAIL_FROM, // must be a verified sender in SendGrid
     subject: options.subject,
     text: options.message,
+    html: options.html || undefined,
   };
 
   try {
-    await transporter.sendMail(mailOptions);
-    logger.info(`Email sent to ${options.email}`);
+    await sgMail.send(msg);
+    logger.info(`Email sent to ${options.email} via SendGrid`);
   } catch (error) {
-    logger.error(`Error sending email to ${options.email}:`, error);
+    logger.error(`Error sending email via SendGrid to ${options.email}:`, error);
+    if (error.response && error.response.body) {
+      logger.error('SendGrid response body:', error.response.body);
+    }
     throw new Error("Email could not be sent");
   }
 };

@@ -1,4 +1,5 @@
-import transporter from '../config/emailConfig.js';
+import emailConfig from '../config/emailConfig.js';
+import { sendEmail } from '../utils/email.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -154,8 +155,14 @@ This email was sent from the contact form on your website.`,
   }
 
   try {
-    await transporter.sendMail(mailOptions);
-    logger.info(`Contact form email sent successfully from ${email} to ${process.env.CONTACT_FORM_RECEIVER_EMAIL} with subject "${subject}"`);
+    await sendEmail({
+      email: process.env.CONTACT_FORM_RECEIVER_EMAIL,
+      subject: mailOptions.subject,
+      message: mailOptions.text,
+      html: mailOptions.html,
+    });
+
+    logger.info(`Contact form email sent successfully from ${email} to ${process.env.CONTACT_FORM_RECEIVER_EMAIL} with subject "${subject}" via ${emailConfig.provider}`);
     res.status(200).json({ message: 'Message sent successfully! We will get back to you soon.' });
   } catch (error) {
     logger.error('Error sending contact form email:', {
@@ -165,12 +172,8 @@ This email was sent from the contact form on your website.`,
       email,
       subject,
     });
-    // Check for specific nodemailer errors if helpful
-    if (error.code === 'EENVELOPE') {
-      logger.error('Nodemailer EENVELOPE error - check recipient and sender email addresses format and validity.');
-    } else if (error.code === 'EAUTH') {
-      logger.error('Nodemailer EAUTH error - check email server credentials (EMAIL_USER, EMAIL_PASS). If using Gmail, ensure "Less secure app access" is ON or use an App Password.');
-    }
+    // Generic guidance logged for troubleshooting
+    logger.error('Email send failed. Ensure SENDGRID_API_KEY and EMAIL_FROM are correctly set in environment variables and that the SendGrid sender identity is verified.');
     res.status(500).json({ message: 'Failed to send message due to a server error. Please try again later.' });
   }
 };

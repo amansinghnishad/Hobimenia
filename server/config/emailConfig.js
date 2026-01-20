@@ -1,8 +1,7 @@
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import logger from './logger.js'; // Assuming logger is in the same config directory
+import logger from './logger.js'; // Use logger for diagnostics
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,36 +16,17 @@ if (dotenvResult.error) {
   logger.info(`✅ .env file loaded from ${envPath} for emailConfig. Parsed variables: ${Object.keys(dotenvResult.parsed || {}).join(', ')}`);
 }
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: parseInt(process.env.EMAIL_PORT, 10),
-  secure: process.env.EMAIL_PORT === '465', // true for 465, false for other ports
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    // Adjust rejectUnauthorized based on your SMTP provider's requirements
-    // For services like Gmail, this should generally be true in production
-    // For local development with self-signed certs, you might set it to false
-    rejectUnauthorized: process.env.NODE_ENV === 'production',
-  }
-});
+// Basic sanity checks for SendGrid-based email sending
+if (!process.env.SENDGRID_API_KEY) {
+  logger.warn('SENDGRID_API_KEY is not set. Email sending via SendGrid will fail until configured.');
+}
+if (!process.env.EMAIL_FROM) {
+  logger.warn('EMAIL_FROM is not set. Set EMAIL_FROM to a verified sender address for SendGrid.');
+}
 
-transporter.verify((error, success) => {
-  if (error) {
-    logger.error('❌ Error configuring email transporter:');
-    logger.error(`- Host: ${process.env.EMAIL_HOST}`);
-    logger.error(`- Port: ${process.env.EMAIL_PORT}`);
-    logger.error(`- User: ${process.env.EMAIL_USER}`);
-    // DO NOT log process.env.EMAIL_PASS
-    logger.error(`- Error Details: ${error.message}`);
-    if (process.env.EMAIL_PASS && process.env.EMAIL_PASS.length < 8) {
-      logger.warn('Potential issue: EMAIL_PASS seems short. If using Gmail with 2FA, ensure it is an App Password.');
-    }
-  } else {
-    logger.info('✅ Email transporter configured successfully. Ready to send emails.');
-  }
-});
-
-export default transporter;
+// This module used to export a nodemailer transporter. We now use SendGrid via the utils/email.js
+// Export a small descriptor for diagnostic purposes in case other modules import this config.
+export default {
+  provider: 'sendgrid',
+  from: process.env.EMAIL_FROM || null,
+};
